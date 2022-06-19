@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<tasks>
+    <task name="C++ was developed by ... .">
+        <answer>Thomas Kushz</answer>
+        <answer>John Kemney</answer>
+        <correctAnswer>Bjarne Stroutstrup</correctAnswer>
+        <answer>James Goling</answer>
+    </task>
+    <task name="What is the smallest individual unit in a program?">
+        <answer>Variable</answer>
+        <answer>Control</answer>
+        <answer>Character</answer>
+        <correctAnswer>Token</correctAnswer>
+    </task>
+    <task name="Auto, static, extern and register are called as ...">
+        <answer>Static</answer>
+        <answer>Register</answer>
+        <answer>Auto</answer>
+        <correctAnswer>Storage specifier</correctAnswer>
+    </task>
+    <task name="How many storage specifies are there in a C++?">
+        <answer>2</answer>
+        <answer>3</answer>
+        <correctAnswer>4</correctAnswer>
+        <answer>5</answer>
+    </task>
+    <task name="Float and double are related to ... data type.">
+        <answer>Void</answer>
+        <correctAnswer>Floating</correctAnswer>
+        <answer>Fixed</answer>
+        <answer>Integral</answer>
+    </task>
+    <task name="Integer values are stored in ... bit format in binary form.">
+        <answer>8</answer>
+        <correctAnswer>16</correctAnswer>
+        <answer>32</answer>
+        <answer>64</answer>
+    </task>
+</tasks>

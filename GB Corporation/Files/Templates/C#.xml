@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<tasks>
+    <task name="How many Bytes are stored by 'Long' Data type in C# .net?">
+        <correctAnswer>8</correctAnswer>
+        <answer>4</answer>
+        <answer>2</answer>
+        <answer>1</answer>
+    </task>
+    <task name="Choose '.Net class' name from which data type 'UInt' is derived">
+        <answer>System.Int16</answer>
+        <correctAnswer>System.UInt32</correctAnswer>
+        <answer>System.UInt64</answer>
+        <answer>System.UInt16</answer>
+    </task>
+    <task name="Which of the following are valid .NET CLR JIT performance counters?">
+        <answer>Total memory used for JIT compilation</answer>
+        <answer>Average memory used for JIT compilation</answer>
+        <correctAnswer>Number of methods that failed to compile with the standard JIT</correctAnswer>
+        <correctAnswer>Percentage of processor time spent performing JIT compilation</correctAnswer>
+        <answer>Percentage of memory currently dedicated for JIT compilation</answer>
+    </task>
+    <task name="Which of the following statements is correct about Managed Code?">
+        <answer>Managed code is the code that is compiled by the JIT compilers.</answer>
+        <answer>Managed code is the code where resources are Garbage Collected.</answer>
+        <answer>Managed code is the code that runs on top of Windows.</answer>
+        <correctAnswer>Managed code is the code that is written to target the services of the CLR.</correctAnswer>
+        <answer>Managed code is the code that can run on top of Linux.</answer>
+    </task>
+    <task name="Which of the following jobs are NOT performed by Garbage Collector?">
+        <correctAnswer>Freeing memory on the stack.</correctAnswer>
+        <answer>Avoiding memory leaks.</answer>
+        <answer>Freeing memory occupied by unreferenced objects.</answer>
+        <correctAnswer>Closing unclosed database collections.</correctAnswer>
+        <correctAnswer>Closing unclosed files.</correctAnswer>
+    </task>
+    <task name="Which of the following .NET components can be used to remove unused references from the managed heap?">
+        <answer>Common Language Infrastructure</answer>
+        <answer>CLR</answer>
+        <correctAnswer>Garbage Collector</correctAnswer>
+        <answer>Class Loader</answer>
+        <answer>CTS</answer>
+    </task>
+</tasks>
