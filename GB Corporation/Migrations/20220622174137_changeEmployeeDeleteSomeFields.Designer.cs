@@ -3,6 +3,7 @@ using System;
 using GB_Corporation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GB_Corporation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220622174137_changeEmployeeDeleteSomeFields")]
+    partial class changeEmployeeDeleteSomeFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -60,9 +62,6 @@ namespace GB_Corporation.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SurnameEn")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -84,8 +83,6 @@ namespace GB_Corporation.Migrations
                     b.HasIndex("LanguageId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("StatusId");
 
                     b.ToTable("Employees");
                 });
@@ -188,19 +185,11 @@ namespace GB_Corporation.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GB_Corporation.Models.SuperDictionary", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
 
                     b.Navigation("Language");
 
                     b.Navigation("Role");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("GB_Corporation.Models.TestCompetencies", b =>

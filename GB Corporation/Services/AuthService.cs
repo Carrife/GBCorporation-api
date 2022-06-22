@@ -29,7 +29,6 @@ namespace GB_Corporation.Services
                 Phone = register.Phone,
                 Email = register.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(register.Password),
-                IsTestRequest = false,
                 LanguageId = register.LanguageId,
                 DepartmentId = register.DepartmentId,
                 RoleId = register.RoleId,

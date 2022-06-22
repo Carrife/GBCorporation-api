@@ -3,6 +3,7 @@ using System;
 using GB_Corporation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GB_Corporation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220622174242_changeEmployeeAddStatus")]
+    partial class changeEmployeeAddStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
@@ -23,21 +25,11 @@ namespace GB_Corporation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("LanguageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+                    
+                    b.Property<string>("SurnameEn")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -45,34 +37,44 @@ namespace GB_Corporation.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("SurnameRu")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
+                    
                     b.Property<string>("PatronymicRu")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkPhone")
+                        .HasColumnType("TEXT");
+                    
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("LanguageId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RoleId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("SurnameEn")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SurnameRu")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("WorkPhone")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
