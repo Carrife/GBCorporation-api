@@ -20,6 +20,7 @@ namespace GB_Corporation.Data
         public DbSet<SuperDictionary> SuperDictionaries { get; set; }
         public DbSet<Template> Templates { get; set; }
         public DbSet<TestCompetencies> TestCompetencies { get; set; }
+        public DbSet<Applicant> Applicants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
