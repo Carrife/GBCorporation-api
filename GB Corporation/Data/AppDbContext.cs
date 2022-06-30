@@ -41,7 +41,7 @@ namespace GB_Corporation.Data
                    .AddJsonFile("appsettings.json")
                    .Build();
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseSqlite(connectionString);
+                optionsBuilder.UseNpgsql(connectionString);
             }
         }
 

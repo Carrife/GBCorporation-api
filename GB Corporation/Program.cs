@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlite("Name=DefaultConnection");
+    options.UseNpgsql("Name=DefaultConnection");
 });
 
 builder.Services.AddCors();
@@ -34,6 +34,11 @@ using(AppDbContext context = new AppDbContext())
         context.SuperDictionaries.Add(new SuperDictionary { Id = 5, Name = "SDD1", DictionaryId = 2 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 6, Name = "SDD2", DictionaryId = 2 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 7, Name = "SDD3", DictionaryId = 2 });
+
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 8, Name = "English", DictionaryId = 3 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 9, Name = "French", DictionaryId = 3 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 10, Name = "German", DictionaryId = 3 });
+
     }
 
     if(!context.Roles.Any())
