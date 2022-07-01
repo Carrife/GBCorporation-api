@@ -5,18 +5,19 @@ using GB_Corporation.DTOs.EmployeeDTOs;
 using Microsoft.EntityFrameworkCore;
 using GB_Corporation.DTOs;
 using GB_Corporation.Enums;
+using GB_Corporation.Models;
 
 namespace GB_Corporation.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly ITestCompetenciesReporitory _testCompetenciesReporitory;
-        private readonly IRoleRepository _roleRepository;
-        private readonly ISuperDictionaryRepository _superDictionaryRepository;
+        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<TestCompetencies> _testCompetenciesReporitory;
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<SuperDictionary> _superDictionaryRepository;
 
-        public EmployeeService(IEmployeeRepository employeeRepository, ITestCompetenciesReporitory testCompetenciesReporitory,
-             IRoleRepository roleRepository, ISuperDictionaryRepository superDictionaryRepository)
+        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<TestCompetencies> testCompetenciesReporitory,
+             IRepository<Role> roleRepository, IRepository<SuperDictionary> superDictionaryRepository)
         {
             _employeeRepository = employeeRepository;
             _testCompetenciesReporitory = testCompetenciesReporitory;
@@ -26,7 +27,7 @@ namespace GB_Corporation.Services
 
         public List<EmployeeDTO> ListAll()
         {
-            return AutoMapperExpression.AutoMapEmployee(_employeeRepository.GetAll()
+            return AutoMapperExpression.AutoMapEmployee(_employeeRepository.GetListResultSpec(x => x)
                     .Include(x => x.Role)
                     .Include(x => x.Department)
                     .Include(x => x.Language)
@@ -35,7 +36,7 @@ namespace GB_Corporation.Services
 
         public void Delete(int id)
         {
-            _employeeRepository.Delete(_employeeRepository.GetAll().Where(x => x.Id == id).First());
+            _employeeRepository.Delete(_employeeRepository.GetResultSpec(x => x.Where(p => p.Id == id)).FirstOrDefault());
         }
 
         public void Update(EmployeeUpdateDTO model)
@@ -60,14 +61,14 @@ namespace GB_Corporation.Services
 
         public EmployeeWithTestsDTO GetById(int id)
         {
-            var user = AutoMapperExpression.AutoMapEmployee(_employeeRepository.GetAll()
+            var user = AutoMapperExpression.AutoMapEmployee(_employeeRepository.GetListResultSpec(x => x)
                 .Include(x => x.Role)
                 .Include(x => x.Department)
                 .Include(x => x.Language)
                 .Where(x => x.Id == id)
                 .First());
             
-            var tests = AutoMapperExpression.AutoMapTestCompetenciesDTO(_testCompetenciesReporitory.GetAll().Where(x => x.EmployeeId == id).ToList());
+            var tests = AutoMapperExpression.AutoMapTestCompetenciesDTO(_testCompetenciesReporitory.GetListResultSpec(x => x.Where(p => p.EmployeeId == id)).ToList());
 
             var employee = new EmployeeWithTestsDTO
             {
@@ -80,17 +81,17 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetLanguages()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetAll().Where(x => x.DictionaryId == (int)DictionaryEnum.Language).ToList());
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Language)).ToList());
         }
 
         public List<ShortDTO> GetDepartments()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetAll().Where(x => x.DictionaryId == (int)DictionaryEnum.Department).ToList());
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Department)).ToList());
         }
 
         public List<ShortDTO> GetRoles()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetAll().ToList());
+            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x).ToList());
         }
     }
 }

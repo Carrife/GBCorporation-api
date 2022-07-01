@@ -2,7 +2,6 @@
 using GB_Corporation.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 
 namespace GB_Corporation.Helpers
@@ -10,9 +9,9 @@ namespace GB_Corporation.Helpers
     public class JwtService
     {
         private string secureKey = "rhjkdSFdsSdhjsEdjkQdjskTdj";
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRepository<Role> _roleRepository;
 
-        public JwtService(IRoleRepository roleRepository)
+        public JwtService(IRepository<Role> roleRepository)
         {
             _roleRepository = roleRepository;
         }

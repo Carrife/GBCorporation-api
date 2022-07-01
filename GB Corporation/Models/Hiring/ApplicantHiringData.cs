@@ -1,8 +1,7 @@
 ﻿namespace GB_Corporation.Models
 {
-    public class ApplicantHiringData
+    public class ApplicantHiringData : BaseEntity
     {
-        public int Id { get; set; }
         public int? ForeignLanguageId { get; set; }
         public int ForeignLanguageResult { get; set; }
         public int? ProgrammingLanguageId { get; set; }

@@ -8,9 +8,9 @@ namespace GB_Corporation.Services
 {
     public class TestCompetenciesService : ITestCompetenciesService
     {
-        private readonly ITestCompetenciesReporitory _testCompetenciesReporitory;
-        private readonly IEmployeeRepository _employeeReporitory;
-        public TestCompetenciesService(ITestCompetenciesReporitory testCompetenciesReporitory, IEmployeeRepository employeeReporitory)
+        private readonly IRepository<TestCompetencies> _testCompetenciesReporitory;
+        private readonly IRepository<Employee> _employeeReporitory;
+        public TestCompetenciesService(IRepository<TestCompetencies> testCompetenciesReporitory, IRepository<Employee> employeeReporitory)
         {
             _testCompetenciesReporitory = testCompetenciesReporitory;
             _employeeReporitory = employeeReporitory;
@@ -68,7 +68,7 @@ namespace GB_Corporation.Services
 
         public void Complete(TestCompleteDTO model)
         {
-            int employeeId = _employeeReporitory.GetAll().Where(x => x.NameEn+" "+x.SurnameEn == model.User).First().Id;
+            int employeeId = _employeeReporitory.GetListResultSpec(x => x.Where(p => p.NameEn+" "+p.SurnameEn == model.User)).First().Id;
 
             TestCompetencies competence = new TestCompetencies
             {

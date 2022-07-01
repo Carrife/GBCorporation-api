@@ -1,8 +1,7 @@
 ﻿namespace GB_Corporation.Models
 {
-    public class TestCompetencies
+    public class TestCompetencies : BaseEntity
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public int TestResult { get; set; }
         public int EmployeeId { get; set; }

@@ -2,14 +2,15 @@
 using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
+using GB_Corporation.Models;
 
 namespace GB_Corporation.Services
 {
     public class TemplateService : ITemplateService
     {
-        private readonly ITemplateRepository _templateRepository;
+        private readonly IRepository<Template> _templateRepository;
         private readonly IWebHostEnvironment _appEnvironment;
-        public TemplateService(ITemplateRepository templateRepository, IWebHostEnvironment appEnvironment)
+        public TemplateService(IRepository<Template> templateRepository, IWebHostEnvironment appEnvironment)
         {
             _templateRepository = templateRepository;
             _appEnvironment = appEnvironment;
@@ -17,7 +18,7 @@ namespace GB_Corporation.Services
 
         public List<TemplateDTO> GetAll()
         {
-            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetAll());
+            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x).ToList());
         }
 
         public void Create(TemplateCreateDTO model)

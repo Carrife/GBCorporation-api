@@ -39,6 +39,9 @@ using(AppDbContext context = new AppDbContext())
         context.SuperDictionaries.Add(new SuperDictionary { Id = 9, Name = "French", DictionaryId = 3 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 10, Name = "German", DictionaryId = 3 });
 
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 11, Name = "Active", DictionaryId = 4 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 12, Name = "Fired", DictionaryId = 4 });
+
     }
 
     if(!context.Roles.Any())
@@ -55,11 +58,7 @@ using(AppDbContext context = new AppDbContext())
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<ISuperDictionaryRepository, SuperDictionaryRepository>();
-builder.Services.AddScoped<ITemplateRepository, TemplateRepository>();
-builder.Services.AddScoped<ITestCompetenciesReporitory, TestCompetenciesRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();

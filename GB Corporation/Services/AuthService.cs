@@ -1,5 +1,6 @@
 ﻿using GB_Corporation.DTOs.AuthenticationDTOs;
 using GB_Corporation.DTOs.EmployeeDTOs;
+using GB_Corporation.Enums;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
@@ -8,13 +9,15 @@ namespace GB_Corporation.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IEmployeeRepository _employeeRepository;
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRepository<Employee> _employeeRepository;
+        private readonly IRepository<Role> _roleRepository;
+        private readonly IRepository<SuperDictionary> _superDictionaryRepository;
 
-        public AuthService(IEmployeeRepository employeeRepository, IRoleRepository roleRepository)
+        public AuthService(IRepository<Employee> employeeRepository, IRepository<Role> roleRepository, IRepository<SuperDictionary> superDictionaryRepository)
         {
             _employeeRepository = employeeRepository;
             _roleRepository = roleRepository;
+            _superDictionaryRepository = superDictionaryRepository;
         }
 
         public void Register(RegisterDTO register)
@@ -26,12 +29,14 @@ namespace GB_Corporation.Services
                 PatronymicRu = register.PatronymicRu,
                 NameRu = register.NameRu,
                 SurnameRu = register.SurnameRu,
+                Login = register.Login,
                 Phone = register.Phone,
                 Email = register.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(register.Password),
                 LanguageId = register.LanguageId,
                 DepartmentId = register.DepartmentId,
                 RoleId = register.RoleId,
+                StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == "Active")).First().Id,
             };
 
             _employeeRepository.Create(employee);
@@ -39,7 +44,7 @@ namespace GB_Corporation.Services
 
         public Employee GetUserByEmail(string email)
         {
-            return _employeeRepository.GetByEmail(email);
+            return _employeeRepository.GetResultSpec(x => x.Where(p => p.Email == email)).FirstOrDefault();
         }
 
         public EmployeeGetUserDTO GetUserById(int id, string? jwt)
@@ -58,7 +63,7 @@ namespace GB_Corporation.Services
 
         public void UpdatePassword(UpdatePasswordDTO updatePassword)
         {
-            var user = _employeeRepository.GetAll().Where(x => x.NameEn + " " + x.SurnameEn == updatePassword.UserName).First();
+            var user = _employeeRepository.GetListResultSpec(x => x.Where(p => p.NameEn + " " + p.SurnameEn == updatePassword.UserName)).First();
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(updatePassword.NewPassword);
 

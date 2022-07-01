@@ -2,9 +2,8 @@
 
 namespace GB_Corporation.Models
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
-        public int Id { get; set; }
         public string NameRu { get; set; }
         public string SurnameRu { get; set; }
         public string PatronymicRu { get; set; }

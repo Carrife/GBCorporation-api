@@ -1,8 +1,7 @@
 ﻿namespace GB_Corporation.Models
 {
-    public class HiringData
+    public class HiringData : BaseEntity
     {
-        public int Id { get; set; }
         public int? ApplicantId { get; set; }
         public int? EmployeeId { get; set; }
         public List<int> ApplicantHiringDataIds { get; set; }

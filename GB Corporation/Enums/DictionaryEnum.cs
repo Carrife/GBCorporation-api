@@ -4,6 +4,8 @@
     {
         Language = 1,
         Department,
+        ForeignLanguage,
+        EmployeeStatus,
 
     }
 }

@@ -1,8 +1,7 @@
 ﻿namespace GB_Corporation.Models
 {
-    public class Applicant
+    public class Applicant : BaseEntity
     {
-        public int Id { get; set; }
         public string NameRu { get; set; }
         public string SurnameRu { get; set; }
         public string PatronymicRu { get; set; }
