@@ -25,6 +25,8 @@ namespace GB_Corporation.Services
             _hiringDataRepository = hiringDataRepository;
         }
 
+        public bool IsExists(string login) => _applicantReporitory.GetResultSpec(x => x.Any(p => p.Login == login)) || _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == login));
+
         public void CreateApplicant(ApplicantDTO register)
         {
             var applicant = new Applicant

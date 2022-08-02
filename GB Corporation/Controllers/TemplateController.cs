@@ -27,7 +27,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("Create")]
         public IActionResult Create(TemplateCreateDTO model)
         {
-            if(!ModelState.IsValid || model == null)
+            if(model == null || _templateService.IsExists(model.Name))
                 return BadRequest();
 
             _templateService.Create(model);
@@ -39,7 +39,7 @@ namespace GB_Corporation.Controllers
         [HttpPut("Update")]
         public IActionResult Update(TemplateDTO model)
         {
-            if (!ModelState.IsValid || model == null || model.Id < 1)
+            if (model == null || !_templateService.IsExists(model.Id) || _templateService.IsExists(model.Name))
                 return BadRequest();
 
             _templateService.Update(model);
@@ -51,7 +51,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("Delete")]
         public IActionResult Delete([FromHeader]int id)
         {
-            if (id < 1)
+            if (!_templateService.IsExists(id))
                 return BadRequest();
 
             _templateService.Delete(id);
@@ -66,9 +66,7 @@ namespace GB_Corporation.Controllers
             if (file == null || id < 1)
                 return BadRequest();
 
-            bool isExists = _templateService.IsExists(id);
-
-            if(!isExists)
+            if(!_templateService.IsExists(id))
                 return NotFound();
 
             _templateService.Upload(file, id);
@@ -80,8 +78,7 @@ namespace GB_Corporation.Controllers
         [HttpGet("Download")]
         public IActionResult DownloadFile([Required][FromHeader] int id)
         {
-            bool isExists = _templateService.IsDocExists(id);
-            if (!isExists)
+            if (!_templateService.IsDocExists(id))
                 return NotFound();
 
             string path = _templateService.GetFilePath(id);

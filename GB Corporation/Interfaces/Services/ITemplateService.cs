@@ -1,10 +1,10 @@
 ﻿using GB_Corporation.DTOs.TemplateDTOs;
-using GB_Corporation.Models;
 
 namespace GB_Corporation.Interfaces.Services
 {
     public interface ITemplateService
     {
+        bool IsExists(string name);
         List<TemplateDTO> GetAll();
         void Create(TemplateCreateDTO model);
         void Update(TemplateDTO model);

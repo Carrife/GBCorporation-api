@@ -93,13 +93,11 @@ namespace GB_Corporation.Controllers
         [HttpPost("UpdatePassword")]
         public IActionResult UpdatePassword([FromBody] UpdatePasswordDTO model)
         {
-            if (model == null || !ModelState.IsValid)
+            if (model == null || _authService.IsExists(model))
                 return BadRequest();
 
             if(model.NewPassword != model.NewPasswordConfirm)
-            {
                 return BadRequest();
-            }
 
             _authService.UpdatePassword(model);
 

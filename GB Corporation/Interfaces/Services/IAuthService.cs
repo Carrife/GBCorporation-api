@@ -6,7 +6,8 @@ namespace GB_Corporation.Interfaces.Services
 {
     public interface IAuthService
     {
-        public bool IsExists(RegisterDTO model);
+        bool IsExists(RegisterDTO model);
+        bool IsExists(UpdatePasswordDTO model);
         void Register(RegisterDTO register);
         Employee GetUserByEmail(string email);
         EmployeeGetUserDTO GetUserById(int id, string? jwt);

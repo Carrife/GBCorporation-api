@@ -21,7 +21,9 @@ namespace GB_Corporation.Services
         }
         
         public bool IsExists(RegisterDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == model.Login || p.Email == model.Email));
-        
+
+        public bool IsExists(UpdatePasswordDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == model.Login));
+
         public void Register(RegisterDTO register)
         {
             var employee = new Employee
@@ -62,7 +64,7 @@ namespace GB_Corporation.Services
 
         public void UpdatePassword(UpdatePasswordDTO updatePassword)
         {
-            var user = _employeeRepository.GetListResultSpec(x => x.Where(p => p.NameEn + " " + p.SurnameEn == updatePassword.UserName)).First();
+            var user = _employeeRepository.GetListResultSpec(x => x.Where(p => p.Login == updatePassword.Login)).First();
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(updatePassword.NewPassword);
 

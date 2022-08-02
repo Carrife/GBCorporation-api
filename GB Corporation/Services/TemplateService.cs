@@ -16,6 +16,8 @@ namespace GB_Corporation.Services
             _appEnvironment = appEnvironment;
         }
 
+        public bool IsExists(string name) => _templateRepository.GetResultSpec(x => x.Any(p => p.Name == name));
+
         public List<TemplateDTO> GetAll()
         {
             return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x).ToList());

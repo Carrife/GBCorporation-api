@@ -25,15 +25,15 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
         [HttpGet("GetById")]
-        public IActionResult GetById([Required][FromHeader]int id)
+        public IActionResult GetById([Required][FromHeader] int id)
         {
             if (id < 1)
                 return BadRequest();
-
-            var employee = _employeeService.GetById(id);
-
-            if(employee == null)
+            
+            if(_employeeService.IsExists(id))
                 return NotFound();
+            
+            var employee = _employeeService.GetById(id);
 
             return Ok(employee);
         }
@@ -45,6 +45,9 @@ namespace GB_Corporation.Controllers
             if (id < 1)
                 return BadRequest();
 
+            if (_employeeService.IsExists(id))
+                return NotFound();
+
             _employeeService.Delete(id);
 
             return Ok();
@@ -54,33 +57,15 @@ namespace GB_Corporation.Controllers
         [HttpPut("Update")]
         public IActionResult Update(EmployeeUpdateDTO model)
         {
-            if (model == null || !ModelState.IsValid || model.Id < 1)
+            if (model == null || model.Id < 1)
                 return BadRequest();
+
+            if (_employeeService.IsExists(model.Id))
+                return NotFound();
 
             _employeeService.Update(model);
 
             return Ok();
-        }
-
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
-        [HttpGet("GetLanguages")]
-        public IActionResult GetLanguages()
-        {
-            return Ok(_employeeService.GetLanguages());
-        }
-
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
-        [HttpGet("GetDepartments")]
-        public IActionResult GetDepartments()
-        {
-            return Ok(_employeeService.GetDepartments());
-        }
-
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
-        [HttpGet("GetRoles")]
-        public IActionResult GetRoles()
-        {
-            return Ok(_employeeService.GetRoles());
         }
     }
 }

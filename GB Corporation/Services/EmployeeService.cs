@@ -13,18 +13,15 @@ namespace GB_Corporation.Services
     {
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<TestCompetencies> _testCompetenciesReporitory;
-        private readonly IRepository<Role> _roleRepository;
-        private readonly IRepository<SuperDictionary> _superDictionaryRepository;
 
-        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<TestCompetencies> testCompetenciesReporitory,
-             IRepository<Role> roleRepository, IRepository<SuperDictionary> superDictionaryRepository)
+        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<TestCompetencies> testCompetenciesReporitory)
         {
             _employeeRepository = employeeRepository;
             _testCompetenciesReporitory = testCompetenciesReporitory;
-            _roleRepository = roleRepository;
-            _superDictionaryRepository = superDictionaryRepository;
         }
 
+        public bool IsExists(int id) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Id == id));
+        
         public List<EmployeeDTO> ListAll()
         {
             return AutoMapperExpression.AutoMapEmployee(_employeeRepository.GetListResultSpec(x => x)
@@ -77,21 +74,6 @@ namespace GB_Corporation.Services
             };
 
             return employee;
-        }
-
-        public List<ShortDTO> GetLanguages()
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Language)).ToList());
-        }
-
-        public List<ShortDTO> GetDepartments()
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Department)).ToList());
-        }
-
-        public List<ShortDTO> GetRoles()
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x).ToList());
         }
     }
 }

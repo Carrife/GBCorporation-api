@@ -22,6 +22,9 @@ namespace GB_Corporation.Controllers
         [HttpGet("Start")]
         public IActionResult Start([Required][FromHeader] int id)
         {
+            if (!_templateService.IsExists(id))
+                return NotFound();
+
             string docPath = _templateService.GetFilePath(id);
 
             var testData = _testCompetenciesService.GetTestData(docPath);
@@ -33,7 +36,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("Complete")]
         public IActionResult Complete([Required][FromBody] TestCompleteDTO model)
         {
-            if(!ModelState.IsValid || model == null)
+            if(model == null)
                 return BadRequest();
 
             _testCompetenciesService.Complete(model);

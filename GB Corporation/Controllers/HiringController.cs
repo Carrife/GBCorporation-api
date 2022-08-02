@@ -21,7 +21,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("CreateApplicant")]
         public IActionResult CreateApplicant([FromBody] ApplicantDTO model)
         {
-            if (model == null || !ModelState.IsValid)
+            if (model == null || _hiringService.IsExists(model.Login))
                 return BadRequest();
 
             _hiringService.CreateApplicant(model);
@@ -33,7 +33,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("CreateApplicantHiringData")]
         public IActionResult CreateApplicantHiringData([FromBody] ApplicantHiringDataDTO model)
         {
-            if (model == null || !ModelState.IsValid)
+            if (model == null)
                 return BadRequest();
 
             _hiringService.CreateApplicantHiringData(model);
