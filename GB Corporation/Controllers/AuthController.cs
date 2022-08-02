@@ -23,7 +23,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("register")]
         public IActionResult Register([FromBody]RegisterDTO model)
         {
-            if (model == null || !ModelState.IsValid)
+            if (model == null || _authService.IsExists(model))
                 return BadRequest();
 
             _authService.Register(model);

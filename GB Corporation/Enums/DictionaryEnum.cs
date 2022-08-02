@@ -6,6 +6,7 @@
         Department,
         ForeignLanguage,
         EmployeeStatus,
+        ApplicantStatus,
 
     }
 }

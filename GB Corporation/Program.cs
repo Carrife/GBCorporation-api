@@ -42,6 +42,10 @@ using(AppDbContext context = new AppDbContext())
         context.SuperDictionaries.Add(new SuperDictionary { Id = 11, Name = "Active", DictionaryId = 4 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 12, Name = "Fired", DictionaryId = 4 });
 
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 13, Name = "Active", DictionaryId = 5 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 14, Name = "Rejected", DictionaryId = 5 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 15, Name = "Hired", DictionaryId = 5 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 16, Name = "Paused", DictionaryId = 5 });
     }
 
     if(!context.Roles.Any())
@@ -51,6 +55,7 @@ using(AppDbContext context = new AppDbContext())
         context.Roles.Add(new Role { Id = 3, Title = "Admin" });
         context.Roles.Add(new Role { Id = 4, Title = "RootUser" });
         context.Roles.Add(new Role { Id = 5, Title = "TeamLeader" });
+        context.Roles.Add(new Role { Id = 6, Title = "HR" });
     }
 
     context.SaveChanges();

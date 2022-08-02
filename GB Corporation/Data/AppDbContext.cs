@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using GB_Corporation.Models;
+﻿using GB_Corporation.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace GB_Corporation.Data
 {

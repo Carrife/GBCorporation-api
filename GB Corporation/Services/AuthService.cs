@@ -19,7 +19,9 @@ namespace GB_Corporation.Services
             _roleRepository = roleRepository;
             _superDictionaryRepository = superDictionaryRepository;
         }
-
+        
+        public bool IsExists(RegisterDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == model.Login || p.Email == model.Email));
+        
         public void Register(RegisterDTO register)
         {
             var employee = new Employee
@@ -36,16 +38,13 @@ namespace GB_Corporation.Services
                 LanguageId = register.LanguageId,
                 DepartmentId = register.DepartmentId,
                 RoleId = register.RoleId,
-                StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == "Active")).First().Id,
+                StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == nameof(EmployeeStatusEnum.Active))).First().Id,
             };
 
             _employeeRepository.Create(employee);
         }
 
-        public Employee GetUserByEmail(string email)
-        {
-            return _employeeRepository.GetResultSpec(x => x.Where(p => p.Email == email)).FirstOrDefault();
-        }
+        public Employee GetUserByEmail(string email) => _employeeRepository.GetResultSpec(x => x.Where(p => p.Email == email)).FirstOrDefault();
 
         public EmployeeGetUserDTO GetUserById(int id, string? jwt)
         {
