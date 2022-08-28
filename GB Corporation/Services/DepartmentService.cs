@@ -17,7 +17,7 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetDepartments()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Department)).ToList());
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Department)));
         }
     }
 }

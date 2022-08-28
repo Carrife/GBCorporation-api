@@ -9,8 +9,44 @@ namespace GB_Corporation.Helpers
 {
     public static class AutoMapperExpression
     {
+        //Applicant
+        public static List<ApplicantDTO> AutoMapApplicantDTO(IQueryable<Applicant> entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Applicant, ApplicantDTO>();
+                cfg.CreateMap<SuperDictionary, ShortDTO>();
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<List<ApplicantDTO>>(entities);
+        }
+
+        public static Applicant AutoMapApplicant(ApplicantDTO entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ApplicantDTO, Applicant>();
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<Applicant>(entities);
+        }
+
+        public static List<ApplicantHiringDataDTO> AutoMapApplicantHiringDataDTO(IQueryable<ApplicantHiringData> entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ApplicantHiringData, ApplicantHiringDataDTO>();
+                cfg.CreateMap<SuperDictionary, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => x.Name));
+                cfg.CreateMap<Employee, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => $"{x.Login}({x.NameEn} {x.SurnameEn})"));
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<List<ApplicantHiringDataDTO>>(entities);
+        }
+
         //Employee
-        public static List<EmployeeDTO> AutoMapEmployee(List<Employee> entities)
+        public static List<EmployeeDTO> AutoMapEmployee(IQueryable<Employee> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Employee, EmployeeDTO>()
@@ -58,7 +94,7 @@ namespace GB_Corporation.Helpers
         }
 
         //Template
-        public static List<TemplateDTO> AutoMapTemplateDTO(List<Template> entities)
+        public static List<TemplateDTO> AutoMapTemplateDTO(IQueryable<Template> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Template, TemplateDTO>();
@@ -92,7 +128,7 @@ namespace GB_Corporation.Helpers
         }
 
         //TestCompetencies
-        public static List<TestCompetenciesDTO> AutoMapTestCompetenciesDTO(List<TestCompetencies> entities)
+        public static List<TestCompetenciesDTO> AutoMapTestCompetenciesDTO(IQueryable<TestCompetencies> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<TestCompetencies, TestCompetenciesDTO>();
@@ -104,7 +140,7 @@ namespace GB_Corporation.Helpers
         }
 
         //ShortDTO
-        public static List<ShortDTO> AutoMapShortDTO(List<SuperDictionary> entities)
+        public static List<ShortDTO> AutoMapShortDTO(IQueryable<SuperDictionary> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<SuperDictionary, ShortDTO>();
@@ -115,7 +151,7 @@ namespace GB_Corporation.Helpers
             return mapper.Map<List<ShortDTO>>(entities);
         }
 
-        public static List<ShortDTO> AutoMapShortDTO(List<Role> entities)
+        public static List<ShortDTO> AutoMapShortDTO(IQueryable<Role> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Role, ShortDTO>()

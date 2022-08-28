@@ -1,6 +1,6 @@
-﻿namespace GB_Corporation.DTOs.HiringsDTOs
+﻿namespace GB_Corporation.DTOs
 {
-    public class ApplicantDTO
+    public class ApplicantDTO : BaseDTO
     {
         public string NameRu { get; set; }
         public string SurnameRu { get; set; }

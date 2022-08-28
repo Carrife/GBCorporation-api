@@ -19,7 +19,7 @@ namespace GB_Corporation.Controllers
             _authService = authService;
         }
 
-        //[Authorize(Roles = "Admin, RootUser")]
+        /*[Authorize(Roles = "Admin, RootUser")]
         [HttpPost("register")]
         public IActionResult Register([FromBody]RegisterDTO model)
         {
@@ -29,7 +29,7 @@ namespace GB_Corporation.Controllers
             _authService.Register(model);
 
             return Ok("success");
-        }
+        }*/
 
         [HttpPost("Login")]
         public IActionResult Login(LoginDTO login)

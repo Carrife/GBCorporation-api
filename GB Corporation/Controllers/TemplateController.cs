@@ -16,14 +16,14 @@ namespace GB_Corporation.Controllers
             _templateService = templateService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
+        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader, HR")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_templateService.GetAll());
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser, HR")]
         [HttpPost("Create")]
         public IActionResult Create(TemplateCreateDTO model)
         {
@@ -35,7 +35,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser, HR")]
         [HttpPut("Update")]
         public IActionResult Update(TemplateDTO model)
         {
@@ -47,7 +47,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser, HR")]
         [HttpPost("Delete")]
         public IActionResult Delete([FromHeader]int id)
         {
@@ -59,7 +59,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser, HR")]
         [HttpPost("Upload")]
         public IActionResult UploadFile([Required][FromHeader] int id, IFormFile file)
         {
@@ -74,7 +74,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser, HR")]
         [HttpGet("Download")]
         public IActionResult DownloadFile([Required][FromHeader] int id)
         {

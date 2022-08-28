@@ -1,15 +1,15 @@
-﻿namespace GB_Corporation.DTOs.HiringsDTOs
+﻿namespace GB_Corporation.DTOs
 {
-    public class ApplicantHiringDataDTO
+    public class ApplicantHiringDataDTO : BaseDTO
     {
-        public int? ApplicantId { get; set; }
-        public int? ForeignLanguageId { get; set; }
-        public int ForeignLanguageResult { get; set; }
-        public int? ProgrammingLanguageId { get; set; }
+        public int ApplicantId { get; set; }
+        public ShortDTO ForeignLanguage { get; set; }
+        public int? ForeignLanguageResult { get; set; }
+        public ShortDTO ProgrammingLanguage { get; set; }
         public int? ProgrammingLanguageResult { get; set; }
-        public int? TeamLeaderId { get; set; }
+        public ShortDTO TeamLeader { get; set; }
         public string? TeamLeaderDescription { get; set; }
-        public int? LineManagerId { get; set; }
+        public ShortDTO LineManager { get; set; }
         public string? LineManagerDescription { get; set; }
     }
 }

@@ -70,6 +70,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<ITestCompetenciesService, TestCompetenciesService>();
+builder.Services.AddScoped<IHiringService, HiringService>();
 
 // Ñonfiguring Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

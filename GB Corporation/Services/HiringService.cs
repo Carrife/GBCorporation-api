@@ -1,8 +1,10 @@
-﻿using GB_Corporation.DTOs.HiringsDTOs;
+﻿using GB_Corporation.DTOs;
 using GB_Corporation.Enums;
+using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GB_Corporation.Services
 {
@@ -26,20 +28,37 @@ namespace GB_Corporation.Services
         }
 
         public bool IsExists(string login) => _applicantReporitory.GetResultSpec(x => x.Any(p => p.Login == login)) || _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == login));
+        
+        public bool IsExists(int id) => _applicantReporitory.GetResultSpec(x => x.Any(p => p.Id == id));
+        
+        public bool IsExistsData(int id) => _applicantHiringDataRepository.GetResultSpec(x => x.Any(p => p.Id == id));
 
-        public void CreateApplicant(ApplicantDTO register)
+        public List<ApplicantDTO> ListAll()
         {
-            var applicant = new Applicant
-            {
-                NameEn = register.NameEn,
-                SurnameEn = register.SurnameEn,
-                PatronymicRu = register.PatronymicRu,
-                NameRu = register.NameRu,
-                SurnameRu = register.SurnameRu,
-                Login = register.Login,
-                Phone = register.Phone,
-                StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Active))).First().Id,
-            };
+            return AutoMapperExpression.AutoMapApplicantDTO(_applicantReporitory.GetListResultSpec(x => x)
+                    .Include(x => x.Status)
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+        }
+
+        public List<ApplicantHiringDataDTO> GetById(int id)
+        {
+            var hiringDatas = _hiringDataRepository.GetResultSpec(x => x.Where(p => p.ApplicantId == id)).First().ApplicantHiringDataIds;
+
+            var applicantData = AutoMapperExpression.AutoMapApplicantHiringDataDTO(
+                _applicantHiringDataRepository.GetListResultSpec(x => x.Where(p => hiringDatas.Contains(p.Id))
+                .Include(p => p.ForeignLanguage)
+                .Include(p => p.ProgrammingLanguage)
+                .Include(p => p.LineManager)
+                .Include(p => p.TeamLeader)));
+
+            return applicantData;
+        }
+
+        public void CreateApplicant(ApplicantDTO model)
+        {
+            var applicant = AutoMapperExpression.AutoMapApplicant(model);
+            applicant.StatusId = _superDictionaryRepository.GetResultSpec(x => 
+                x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Active))).First().Id;
 
             _applicantReporitory.Create(applicant);
         }
@@ -48,10 +67,14 @@ namespace GB_Corporation.Services
         {
             var applicantHiringData = new ApplicantHiringData
             {
-                ForeignLanguageId = data.ForeignLanguageId,
+                ForeignLanguageId = data.ForeignLanguage.Id,
                 ForeignLanguageResult = data.ForeignLanguageResult,
-                ProgrammingLanguageId = data.ProgrammingLanguageId,
+                ProgrammingLanguageId = data.ProgrammingLanguage.Id,
                 ProgrammingLanguageResult = data.ProgrammingLanguageResult,
+                TeamLeaderId = data.TeamLeader.Id,
+                TeamLeaderDescription = data.TeamLeaderDescription,
+                LineManagerId = data.LineManager.Id,
+                LineManagerDescription = data.LineManagerDescription
             };
 
             var hiringDataId = _applicantHiringDataRepository.Create(applicantHiringData).Id;
@@ -63,6 +86,25 @@ namespace GB_Corporation.Services
             };
 
             _hiringDataRepository.Create(hiringData);
+        }
+
+        public void Update(ApplicantHiringDataDTO model)
+        {
+            var data = _applicantHiringDataRepository.GetById(model.Id);
+
+            if (data != null)
+            {
+                data.ForeignLanguageId = model.ForeignLanguage?.Id;
+                data.ForeignLanguageResult = model.ForeignLanguageResult;
+                data.ProgrammingLanguageId = model.ProgrammingLanguage?.Id;
+                data.ProgrammingLanguageResult = model.ProgrammingLanguageResult;
+                data.TeamLeaderId = model.TeamLeader?.Id;
+                data.TeamLeaderDescription = model.TeamLeaderDescription;
+                data.LineManagerId = model.LineManager?.Id;
+                data.LineManagerDescription = model.LineManagerDescription;
+
+                _applicantHiringDataRepository.Update(data);
+            }
         }
     }
 }

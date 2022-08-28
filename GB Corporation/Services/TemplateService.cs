@@ -20,7 +20,7 @@ namespace GB_Corporation.Services
 
         public List<TemplateDTO> GetAll()
         {
-            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x).ToList());
+            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x));
         }
 
         public void Create(TemplateCreateDTO model)

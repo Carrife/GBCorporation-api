@@ -28,7 +28,7 @@ namespace GB_Corporation.Services
                     .Include(x => x.Role)
                     .Include(x => x.Department)
                     .Include(x => x.Language)
-                    .OrderBy(x => x.NameEn).ToList());
+                    .OrderBy(x => x.NameEn));
         }
 
         public void Delete(int id)
@@ -65,7 +65,7 @@ namespace GB_Corporation.Services
                 .Where(x => x.Id == id)
                 .First());
             
-            var tests = AutoMapperExpression.AutoMapTestCompetenciesDTO(_testCompetenciesReporitory.GetListResultSpec(x => x.Where(p => p.EmployeeId == id)).ToList());
+            var tests = AutoMapperExpression.AutoMapTestCompetenciesDTO(_testCompetenciesReporitory.GetListResultSpec(x => x.Where(p => p.EmployeeId == id)));
 
             var employee = new EmployeeWithTestsDTO
             {

@@ -16,7 +16,7 @@ namespace GB_Corporation.Controllers
             _employeeService = employeeService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
+        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader, HR")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
@@ -53,11 +53,11 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, LineManager")]
+        [Authorize(Roles = "Admin, RootUser")]
         [HttpPut("Update")]
         public IActionResult Update(EmployeeUpdateDTO model)
         {
-            if (model == null || model.Id < 1)
+            if (model == null)
                 return BadRequest();
 
             if (_employeeService.IsExists(model.Id))

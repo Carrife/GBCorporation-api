@@ -16,7 +16,7 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetRoles()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x).ToList());
+            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x));
         }
     }
 }
