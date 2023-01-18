@@ -106,5 +106,60 @@ namespace GB_Corporation.Services
                 _applicantHiringDataRepository.Update(data);
             }
         }
+
+        public void Hire(HiringDTO model)
+        {
+            var applicant = _applicantReporitory.GetById(model.Id);
+            applicant.StatusId = _superDictionaryRepository.GetResultSpec(x =>
+                x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Hired))).First().Id;
+
+            var employeeActiveStatusId = _superDictionaryRepository.GetResultSpec(x =>
+                x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == nameof(EmployeeStatusEnum.Active))).First().Id;
+
+            if(_employeeRepository.GetResultSpec(x => x.Any(p => p.Login == applicant.Login)))
+            {
+                var employee = _employeeRepository.GetResultSpec(x => x.Where(p => p.Login == applicant.Login)).First();
+                employee.StatusId = employeeActiveStatusId;
+                employee.Email = model.Email;
+                employee.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+                employee.LanguageId = model.LanguageId;
+                employee.DepartmentId = model.DepartmentId;
+                employee.RoleId = model.RoleId;
+
+                _employeeRepository.Update(employee);
+            }
+            else
+            {
+                var employee = new Employee()
+                {
+                    NameRu = applicant.NameRu,
+                    SurnameRu = applicant.SurnameRu,
+                    PatronymicRu = applicant.PatronymicRu,
+                    NameEn = applicant.NameEn,
+                    SurnameEn = applicant.SurnameEn,
+                    Login = applicant.Login,
+                    Phone = applicant.Phone,
+                    Email = model.Email,
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                    LanguageId = model.LanguageId,
+                    DepartmentId = model.DepartmentId,
+                    RoleId = model.RoleId,
+                    StatusId = employeeActiveStatusId
+                };
+
+                _employeeRepository.Create(employee);
+            }
+
+            _applicantReporitory.Update(applicant);
+        }
+
+        public void Reject(int id)
+        {
+            var applicant = _applicantReporitory.GetById(id);
+            applicant.StatusId = _superDictionaryRepository.GetResultSpec(x =>
+                x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Rejected))).First().Id;
+
+            _applicantReporitory.Update(applicant);
+        }
     }
 }

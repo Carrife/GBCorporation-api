@@ -77,5 +77,29 @@ namespace GB_Corporation.Controllers
 
             return Ok();
         }
+
+        [Authorize(Roles = "HR, RootUser")]
+        [HttpPut("Reject")]
+        public IActionResult Reject(int id)
+        {
+            if (!_hiringService.IsExists(id))
+                return NotFound();
+
+            _hiringService.Reject(id);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "HR, RootUser")]
+        [HttpPut("Hire")]
+        public IActionResult Hire(HiringDTO model)
+        { 
+            if (!_hiringService.IsExists(model.Id))
+                return NotFound();
+
+            _hiringService.Hire(model);
+
+            return Ok();
+        }
     }
 }

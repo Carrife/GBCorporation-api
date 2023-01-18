@@ -12,5 +12,7 @@ namespace GB_Corporation.Interfaces.Services
         List<ApplicantHiringDataDTO> GetById(int id);
         void Update(ApplicantHiringDataDTO model);
         bool IsExistsData(int id);
+        void Hire(HiringDTO id);
+        void Reject(int id);
     }
 }
