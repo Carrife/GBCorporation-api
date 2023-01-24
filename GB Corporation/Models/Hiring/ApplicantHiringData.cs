@@ -2,17 +2,20 @@
 {
     public class ApplicantHiringData : BaseEntity
     {
-        public int? ForeignLanguageId { get; set; }
-        public int? ForeignLanguageResult { get; set; }
-        public int? ProgrammingLanguageId { get; set; }
-        public int? ProgrammingLanguageResult { get; set; }
-        public int? TeamLeaderId { get; set; }
+        public int ApplicantId { get; set; }
+        public int ForeignLanguageTestId { get; set; }
+        public int LogicTestId { get; set; }
+        public int ProgrammingTestId { get; set; }
+        public int TeamLeaderId { get; set; }
         public string? TeamLeaderDescription { get; set; }
-        public int? LineManagerId { get; set; }
+        public int LineManagerId { get; set; }
         public string? LineManagerDescription { get; set; }
-        public SuperDictionary ProgrammingLanguage { get; set; }
-        public SuperDictionary ForeignLanguage { get; set; }
+        public DateTime Date { get; set; }
+        public Applicant Applicant { get; set; }
         public Employee TeamLeader { get; set; }
         public Employee LineManager { get; set; }
+        public ApplicantForeignLanguageTest ForeignLanguageTest { get; set; }
+        public ApplicantLogicTest LogicTest { get; set; }
+        public ApplicantProgrammingTest ProgrammingTest { get; set; }
     }
 }

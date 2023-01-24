@@ -1,5 +1,4 @@
 ﻿using GB_Corporation.DTOs;
-using GB_Corporation.Enums;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,41 +16,7 @@ namespace GB_Corporation.Controllers
             _hiringService = hiringService;
         }
 
-        [Authorize(Roles = "RootUser, HR")]
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
-        {
-            return Ok(_hiringService.ListAll());
-        }
-
-        [Authorize(Roles = "RootUser, HR")]
-        [HttpGet("GetById")]
-        public IActionResult GetById([Required][FromHeader] int id)
-        {
-            if (!_hiringService.IsExists(id))
-                return NotFound();
-
-            var applicant = _hiringService.GetById(id);
-
-            return Ok(applicant);
-        }
-
-        [Authorize(Roles = "RootUser, HR")]
-        [HttpPost("CreateApplicant")]
-        public IActionResult CreateApplicant([FromBody] ApplicantDTO model)
-        {
-            if (model == null)
-                return BadRequest();
-
-            if(_hiringService.IsExists(model.Login))
-                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameLoginExists));
-
-            _hiringService.CreateApplicant(model);
-
-            return Ok();
-        }
-
-        [Authorize(Roles = "RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("CreateApplicantHiringData")]
         public IActionResult CreateApplicantHiringData([FromBody] ApplicantHiringDataDTO model)
         {
@@ -63,7 +28,19 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HR, RootUser")]
+        [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetById")]
+        public IActionResult GetById([Required][FromHeader] int id)
+        {
+            if (!_hiringService.IsExists(id))
+                return NotFound();
+
+            var data = _hiringService.GetById(id);
+
+            return Ok(data);
+        }
+
+        [Authorize(Roles = "HR, Admin")]
         [HttpPut("Update")]
         public IActionResult Update(ApplicantHiringDataDTO model)
         {
@@ -78,7 +55,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HR, RootUser")]
+        [Authorize(Roles = "HR, Admin")]
         [HttpPut("Reject")]
         public IActionResult Reject(int id)
         {
@@ -90,7 +67,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HR, RootUser")]
+        [Authorize(Roles = "HR, Admin")]
         [HttpPut("Hire")]
         public IActionResult Hire(HiringDTO model)
         { 

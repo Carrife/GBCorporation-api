@@ -2,7 +2,7 @@
 {
     public enum DictionaryEnum
     {
-        Language = 1,
+        ProgrammingLanguage = 1,
         Department,
         ForeignLanguage,
         EmployeeStatus,

@@ -18,7 +18,7 @@ namespace GB_Corporation.Controllers
             _templateService = templateService;
         }
 
-        [Authorize(Roles = "TeamLeader, Developer, RootUser")]
+        [Authorize(Roles = "TeamLeader, Developer, Admin")]
         [HttpGet("Start")]
         public IActionResult Start([Required][FromHeader] int id)
         {
@@ -32,7 +32,7 @@ namespace GB_Corporation.Controllers
             return Ok(testData);
         }
 
-        [Authorize(Roles = "TeamLeader, Developer, RootUser")]
+        [Authorize(Roles = "TeamLeader, Developer, Admin")]
         [HttpPost("Complete")]
         public IActionResult Complete([Required][FromBody] TestCompleteDTO model)
         {

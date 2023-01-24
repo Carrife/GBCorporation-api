@@ -16,14 +16,14 @@ namespace GB_Corporation.Controllers
             _employeeService = employeeService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_employeeService.ListAll());
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
         {
@@ -38,7 +38,7 @@ namespace GB_Corporation.Controllers
             return Ok(employee);
         }
 
-        [Authorize(Roles = "Admin, RootUser")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("Delete")]
         public IActionResult Delete([FromHeader]int id)
         {
@@ -53,7 +53,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("Update")]
         public IActionResult Update(EmployeeUpdateDTO model)
         {

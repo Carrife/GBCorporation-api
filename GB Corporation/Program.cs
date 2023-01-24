@@ -53,9 +53,8 @@ using(AppDbContext context = new AppDbContext())
         context.Roles.Add(new Role { Id = 1, Title = "Developer" });
         context.Roles.Add(new Role { Id = 2, Title = "LineManager" });
         context.Roles.Add(new Role { Id = 3, Title = "Admin" });
-        context.Roles.Add(new Role { Id = 4, Title = "RootUser" });
-        context.Roles.Add(new Role { Id = 5, Title = "TeamLeader" });
-        context.Roles.Add(new Role { Id = 6, Title = "HR" });
+        context.Roles.Add(new Role { Id = 4, Title = "TeamLeader" });
+        context.Roles.Add(new Role { Id = 5, Title = "HR" });
     }
 
     context.SaveChanges();
@@ -71,6 +70,9 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<ITestCompetenciesService, TestCompetenciesService>();
 builder.Services.AddScoped<IHiringService, HiringService>();
+builder.Services.AddScoped<IApplicantService, ApplicantService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ISuperDictionaryService, SuperDictionaryService>();
 
 // Ñonfiguring Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();

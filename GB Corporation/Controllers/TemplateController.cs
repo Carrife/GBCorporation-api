@@ -16,14 +16,14 @@ namespace GB_Corporation.Controllers
             _templateService = templateService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(_templateService.GetAll());
         }
 
-        [Authorize(Roles = "Admin, RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("Create")]
         public IActionResult Create(TemplateCreateDTO model)
         {
@@ -35,7 +35,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPut("Update")]
         public IActionResult Update(TemplateDTO model)
         {
@@ -47,7 +47,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("Delete")]
         public IActionResult Delete([FromHeader]int id)
         {
@@ -59,7 +59,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("Upload")]
         public IActionResult UploadFile([Required][FromHeader] int id, IFormFile file)
         {
@@ -74,7 +74,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, RootUser, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("Download")]
         public IActionResult DownloadFile([Required][FromHeader] int id)
         {
@@ -82,7 +82,7 @@ namespace GB_Corporation.Controllers
                 return NotFound();
 
             string path = _templateService.GetFilePath(id);
-            FileStream fs = new FileStream(path, FileMode.Open);
+            FileStream fs = new(path, FileMode.Open);
             string fileType = "application/pdf";
             string file_name = _templateService.GetFileName(id);
             

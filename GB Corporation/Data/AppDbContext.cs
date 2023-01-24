@@ -10,6 +10,8 @@ namespace GB_Corporation.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             Database.EnsureCreated();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
         }
         
         public DbSet<Employee> Employees { get; set; }
@@ -20,12 +22,21 @@ namespace GB_Corporation.Data
         public DbSet<Applicant> Applicants { get; set; }
         public DbSet<ApplicantHiringData> ApplicantHiringDatas { get; set; }
         public DbSet<HiringData> HiringDatas { get; set; }
+        public DbSet<ApplicantForeignLanguageTest> ApplicantForeignLanguageTests { get; set; }
+        public DbSet<ApplicantLogicTest> ApplicantLogicTests { get; set; }
+        public DbSet<ApplicantProgrammingTest> ApplicantProgrammingTests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasIndex(x => x.Email).IsUnique();
+                entity.HasIndex(x => x.Login).IsUnique();
+            });
+
+            modelBuilder.Entity<Applicant>(entity =>
+            {
+                entity.HasIndex(x => x.Login).IsUnique();
             });
         }
 

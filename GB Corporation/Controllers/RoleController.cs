@@ -15,7 +15,7 @@ namespace GB_Corporation.Controllers
             _roleService = roleService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, RootUser, TeamLeader")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpGet("GetRoles")]
         public IActionResult GetRoles()
         {

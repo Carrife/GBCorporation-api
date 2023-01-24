@@ -48,7 +48,7 @@ namespace GB_Corporation.Services
 
             if(template.Link != null)
             {
-                FileInfo file = new FileInfo(template.Link);
+                FileInfo file = new(template.Link);
 
                 if(file.Exists)
                 {

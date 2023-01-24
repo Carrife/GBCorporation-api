@@ -1,11 +1,12 @@
 ﻿using GB_Corporation.DTOs;
 using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Repositories;
+using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
 
 namespace GB_Corporation.Services
 {
-    public class RoleService
+    public class RoleService : IRoleService
     {
         private readonly IRepository<Role> _roleRepository;
 
