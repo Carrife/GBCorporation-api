@@ -16,9 +16,9 @@ namespace GB_Corporation.Services
             _employeeReporitory = employeeReporitory;
         }
 
-        public List<TestDTO> GetTestData(string docPath)
+        public List<CompetenciesTestDTO> GetTestData(string docPath)
         {
-            var questions = new List<TestDTO>();
+            var questions = new List<CompetenciesTestDTO>();
 
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(docPath);
@@ -28,7 +28,7 @@ namespace GB_Corporation.Services
             {
                 foreach (XmlElement xnode in xRoot)
                 {
-                    TestDTO question = new TestDTO();
+                    CompetenciesTestDTO question = new CompetenciesTestDTO();
 
                     XmlNode? attr = xnode.Attributes.GetNamedItem("name");
                     question.Question = attr?.Value;

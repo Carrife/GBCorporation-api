@@ -11,11 +11,13 @@
         public int LineManagerId { get; set; }
         public string? LineManagerDescription { get; set; }
         public DateTime Date { get; set; }
+        public int StatusId { get; set; }
         public Applicant Applicant { get; set; }
         public Employee TeamLeader { get; set; }
         public Employee LineManager { get; set; }
         public ApplicantForeignLanguageTest ForeignLanguageTest { get; set; }
         public ApplicantLogicTest LogicTest { get; set; }
         public ApplicantProgrammingTest ProgrammingTest { get; set; }
+        public SuperDictionary Status { get; set; }
     }
 }

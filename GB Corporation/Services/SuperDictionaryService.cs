@@ -39,45 +39,5 @@ namespace GB_Corporation.Services
         {
             return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ForeignLanguage)));
         }
-
-        public void Create(LogicTestDTO model)
-        {
-            var test = new ApplicantLogicTest
-            {
-                Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
-                ApplicantId = model.ApplicantId
-            };
-
-            _applicantLogicTestsRepository.Create(test);
-        }
-
-        public void Create(ForeignLanguageTestDTO model)
-        {
-            var test = new ApplicantForeignLanguageTest
-            {
-                ForeignLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
-                    p.DictionaryId == (int)DictionaryEnum.ForeignLanguage && p.Id == model.ForeignLanguageId).First()).Id,
-                Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
-                ApplicantId = model.ApplicantId
-            };
-
-            _applicantForeignLanguageTestRepository.Create(test);
-        }
-
-        public void Create(ProgrammingTestDTO model)
-        {
-            var test = new ApplicantProgrammingTest
-            {
-                ProgrammingLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
-                    p.DictionaryId == (int)DictionaryEnum.ProgrammingLanguage && p.Id == model.ProgrammingLanguageId).First()).Id,
-                Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
-                ApplicantId = model.ApplicantId
-            };
-
-            _applicantProgrammingTestRepository.Create(test);
-        }
     }
 }

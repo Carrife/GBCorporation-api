@@ -4,7 +4,6 @@
     {
         Active,
         Rejected,
-        Hired,
-        Paused
+        Hired
     }
 }

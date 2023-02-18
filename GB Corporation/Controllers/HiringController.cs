@@ -1,4 +1,5 @@
 ﻿using GB_Corporation.DTOs;
+using GB_Corporation.Enums;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,27 +18,58 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin, HR")]
-        [HttpPost("CreateApplicantHiringData")]
-        public IActionResult CreateApplicantHiringData([FromBody] ApplicantHiringDataDTO model)
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
         {
-            if (model == null || !_hiringService.IsExists(model.ApplicantId))
-                return BadRequest();
+            return Ok(_hiringService.ListAll());
+        }
 
-            _hiringService.CreateApplicantHiringData(model);
+        [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetForeignTestShort")]
+        public IActionResult GetForeignTestShort([Required][FromHeader] int id)
+        {
+            return Ok(_hiringService.ListForeignTestShort(id));
+        }
 
-            return Ok();
+        [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetLogicTestShort")]
+        public IActionResult GetLogicTestShort([Required][FromHeader] int id)
+        {
+            return Ok(_hiringService.ListLogicTestShort(id));
+        }
+
+        [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetProgrammingTestShort")]
+        public IActionResult GetProgrammingTestShort([Required][FromHeader] int id)
+        {
+            return Ok(_hiringService.ListProgrammingTestShort(id));
         }
 
         [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
         {
-            if (!_hiringService.IsExists(id))
+            if (!_hiringService.IsExistsData(id))
                 return NotFound();
 
             var data = _hiringService.GetById(id);
 
             return Ok(data);
+        }
+        
+        [Authorize(Roles = "Admin, HR")]
+        [HttpPost("Create")]
+        public IActionResult CreateApplicantHiringData([FromBody] ApplicantHiringDataDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (_hiringService.IsExistsActiveData(model.Applicant.Id))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.HiringExists));
+
+            _hiringService.CreateApplicantHiringData(model);
+
+            return Ok();
         }
 
         [Authorize(Roles = "HR, Admin")]

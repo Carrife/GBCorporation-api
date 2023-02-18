@@ -25,6 +25,13 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetActiveShort")]
+        public IActionResult GetActiveShort()
+        {
+            return Ok(_applicantService.ListActiveShort());
+        }
+
+        [Authorize(Roles = "Admin, HR")]
         [HttpPost("Create")]
         public IActionResult Create([FromBody] ApplicantCreateDTO model)
         {
@@ -43,11 +50,8 @@ namespace GB_Corporation.Controllers
         [HttpPut("Update")]
         public IActionResult Update(ApplicantUpdateDTO model)
         {
-            if (model == null)
+            if (model == null || !_applicantService.IsExists(model.Id))
                 return BadRequest();
-
-            if (!_applicantService.IsExists(model.Id))
-                return NotFound();
 
             _applicantService.Update(model);
 
@@ -59,6 +63,42 @@ namespace GB_Corporation.Controllers
         public IActionResult GetTestDatas([Required][FromHeader] int id)
         {
             return Ok(_applicantService.GetTestDatas(id));
+        }
+
+        [Authorize(Roles = "Admin, HR")]
+        [HttpPost("CreateLogicTestData")]
+        public IActionResult CreateLogicTestData([FromBody] LogicTestDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            _applicantService.CreateTestData(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin, HR")]
+        [HttpPost("CreateProgrammingTestData")]
+        public IActionResult CreateProgrammingTestData([FromBody] ProgrammingTestDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            _applicantService.CreateTestData(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin, HR")]
+        [HttpPost("CreateForeignLanguageTestData")]
+        public IActionResult CreateForeignLanguageTestData([FromBody] ForeignLanguageTestDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            _applicantService.CreateTestData(model);
+
+            return Ok();
         }
     }
 }

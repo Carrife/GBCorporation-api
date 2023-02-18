@@ -16,11 +16,13 @@ namespace GB_Corporation.Services
         private readonly IRepository<ApplicantLogicTest> _applicantLogicTestsRepository;
         private readonly IRepository<ApplicantProgrammingTest> _applicantProgrammingTestRepository;
         private readonly IRepository<ApplicantForeignLanguageTest> _applicantForeignLanguageTestRepository;
+        private readonly IRepository<ApplicantHiringData> _applicantHiringDataRepository;
 
         public ApplicantService(IRepository<Employee> employeeRepository, IRepository<Applicant> applicantReporitory,
              IRepository<SuperDictionary> superDictionaryRepository, IRepository<ApplicantLogicTest> applicantLogicTestsRepository, 
              IRepository<ApplicantProgrammingTest> applicantProgrammingTestRepository,
-             IRepository<ApplicantForeignLanguageTest> applicantForeignLanguageTestRepository)
+             IRepository<ApplicantForeignLanguageTest> applicantForeignLanguageTestRepository, 
+             IRepository<ApplicantHiringData> applicantHiringDataRepository)
         {
             _employeeRepository = employeeRepository;
             _applicantReporitory = applicantReporitory;
@@ -28,11 +30,22 @@ namespace GB_Corporation.Services
             _applicantForeignLanguageTestRepository = applicantForeignLanguageTestRepository;
             _applicantLogicTestsRepository = applicantLogicTestsRepository;
             _applicantProgrammingTestRepository = applicantProgrammingTestRepository;
+            _applicantHiringDataRepository = applicantHiringDataRepository;
         }
 
         public List<ApplicantDTO> ListAll()
         {
             return AutoMapperExpression.AutoMapApplicantDTO(_applicantReporitory.GetListResultSpec(x => x)
+                    .Include(x => x.Status)
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+        }
+
+        public List<ShortDTO> ListActiveShort()
+        {
+            var hiringStatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus &&
+                p.Name == nameof(HiringStatusEnum.Open))).First().Id;
+           var hiringList = _applicantHiringDataRepository.GetListResultSpec(x => x.Where(p => p.StatusId == hiringStatusId).Select(p => p.ApplicantId));
+            return AutoMapperExpression.AutoMapShortDTO(_applicantReporitory.GetListResultSpec(x => x.Where(p => !hiringList.Any(h => h == p.Id)))
                     .Include(x => x.Status)
                     .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
         }
@@ -79,17 +92,57 @@ namespace GB_Corporation.Services
             var data = new ApplicantTestsDTO();
             data.LogicTests = AutoMapperExpression.AutoMapApplicantLogicTestDTO(_applicantLogicTestsRepository
                 .GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
-                    .OrderBy(x => x.Date));
+                    .OrderByDescending(x => x.Date));
             data.ForeignLanguageTests = AutoMapperExpression.AutoMapApplicantForeignLanguageTestDTO(_applicantForeignLanguageTestRepository
                 .GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
                     .Include(x => x.ForeignLanguage)
-                    .OrderBy(x => x.Date));
+                    .OrderByDescending(x => x.Date));
             data.ProgrammingTests = AutoMapperExpression.AutoMapApplicantProgrammingTestDTO(_applicantProgrammingTestRepository
                 .GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
                     .Include(x => x.ProgrammingLanguage)
-                    .OrderBy(x => x.Date));
+                    .OrderByDescending(x => x.Date));
 
             return data;
+        }
+
+        public void CreateTestData(LogicTestDTO model)
+        {
+            var test = new ApplicantLogicTest
+            {
+                Result = model.Result,
+                Date = model.Date.ToUniversalTime(),
+                ApplicantId = model.ApplicantId
+            };
+
+            _applicantLogicTestsRepository.Create(test);
+        }
+
+        public void CreateTestData(ForeignLanguageTestDTO model)
+        {
+            var test = new ApplicantForeignLanguageTest
+            {
+                ForeignLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
+                    p.DictionaryId == (int)DictionaryEnum.ForeignLanguage && p.Id == model.ForeignLanguageId).First()).Id,
+                Result = model.Result,
+                Date = model.Date.ToUniversalTime(),
+                ApplicantId = model.ApplicantId
+            };
+
+            _applicantForeignLanguageTestRepository.Create(test);
+        }
+
+        public void CreateTestData(ProgrammingTestDTO model)
+        {
+            var test = new ApplicantProgrammingTest
+            {
+                ProgrammingLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
+                    p.DictionaryId == (int)DictionaryEnum.ProgrammingLanguage && p.Id == model.ProgrammingLanguageId).First()).Id,
+                Result = model.Result,
+                Date = model.Date.ToUniversalTime(),
+                ApplicantId = model.ApplicantId
+            };
+
+            _applicantProgrammingTestRepository.Create(test);
         }
     }
 }

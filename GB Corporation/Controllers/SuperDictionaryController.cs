@@ -1,8 +1,5 @@
-﻿using GB_Corporation.DTOs;
-using GB_Corporation.Interfaces.Services;
-using GB_Corporation.Models;
+﻿using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GB_Corporation.Controllers
@@ -37,42 +34,6 @@ namespace GB_Corporation.Controllers
         public IActionResult GetForeignLanguages()
         {
             return Ok(_superDictionaryService.GetForeignLanguages());
-        }
-
-        [Authorize(Roles = "Admin, HR")]
-        [HttpPost("CreateLogicTestData")]
-        public IActionResult CreateLogicTestData([FromBody] LogicTestDTO model)
-        {
-            if (model == null)
-                return BadRequest();
-
-            _superDictionaryService.Create(model);
-
-            return Ok();
-        }
-
-        [Authorize(Roles = "Admin, HR")]
-        [HttpPost("CreateProgrammingTestData")]
-        public IActionResult CreateProgrammingTestData([FromBody] ProgrammingTestDTO model)
-        {
-            if (model == null)
-                return BadRequest();
-
-            _superDictionaryService.Create(model);
-
-            return Ok();
-        }
-
-        [Authorize(Roles = "Admin, HR")]
-        [HttpPost("CreateForeignLanguageTestData")]
-        public IActionResult CreateForeignLanguageTestData([FromBody] ForeignLanguageTestDTO model)
-        {
-            if (model == null)
-                return BadRequest();
-
-            _superDictionaryService.Create(model);
-
-            return Ok();
         }
     }
 }

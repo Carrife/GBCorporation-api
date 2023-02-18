@@ -7,6 +7,6 @@
         ForeignLanguage,
         EmployeeStatus,
         ApplicantStatus,
-
+        HiringStatus
     }
 }
