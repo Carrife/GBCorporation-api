@@ -2,10 +2,13 @@
 {
     public class HiringDTO : BaseDTO
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public int? LanguageId { get; set; }
-        public int DepartmentId { get; set; }
-        public int RoleId { get; set; }
+        public ShortDTO Applicant { get; set; }
+        public DateTime Date { get; set; }
+        public ShortDTO Position { get; set; }
+        public ShortDTO Status { get; set; }
+        public List<HiringInterviewerDTO> Interviewers { get; set; }
+        public ForeignLanguageTestDTO ForeignLanguageTest { get; set; }
+        public LogicTestDTO LogicTest { get; set; }
+        public ProgrammingTestDTO ProgrammingTest { get; set; }
     }
 }

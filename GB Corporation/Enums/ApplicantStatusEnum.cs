@@ -3,7 +3,7 @@
     public enum ApplicantStatusEnum
     {
         Active,
-        Rejected,
+        InProgress,
         Hired
     }
 }

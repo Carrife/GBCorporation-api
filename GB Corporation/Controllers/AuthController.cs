@@ -89,7 +89,7 @@ namespace GB_Corporation.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpPost("UpdatePassword")]
         public IActionResult UpdatePassword([FromBody] UpdatePasswordDTO model)
         {

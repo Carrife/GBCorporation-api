@@ -54,6 +54,7 @@ namespace GB_Corporation.Services
 
             var user = new EmployeeGetUserDTO
             {
+                Id = id,
                 Name = emoployee.NameEn + " " + emoployee.SurnameEn,
                 Role = _roleRepository.GetById(emoployee.RoleId).Title,
                 Token = jwt

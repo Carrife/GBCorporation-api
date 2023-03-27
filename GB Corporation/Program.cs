@@ -20,7 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddCors();
 
-using(AppDbContext context = new AppDbContext())
+using(AppDbContext context = new())
 {
     context.Database.Migrate();
 
@@ -48,6 +48,17 @@ using(AppDbContext context = new AppDbContext())
 
         context.SuperDictionaries.Add(new SuperDictionary { Id = 16, Name = "Open", DictionaryId = 6 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 17, Name = "Closed", DictionaryId = 6 });
+
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 18, Name = "Accountant", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 19, Name = "Business Analyst", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 20, Name = "Junior Software Developer", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 21, Name = "Middle Software Developer", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 22, Name = "Senior Software Developer", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 23, Name = "HR", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 24, Name = "Administrator", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 25, Name = "Line Manager", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 26, Name = "CEO", DictionaryId = 7 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 27, Name = "Chief Accountant", DictionaryId = 7 });
     }
 
     if(!context.Roles.Any())
@@ -57,6 +68,9 @@ using(AppDbContext context = new AppDbContext())
         context.Roles.Add(new Role { Id = 3, Title = "Admin" });
         context.Roles.Add(new Role { Id = 4, Title = "TeamLeader" });
         context.Roles.Add(new Role { Id = 5, Title = "HR" });
+        context.Roles.Add(new Role { Id = 3, Title = "Accountant" });
+        context.Roles.Add(new Role { Id = 4, Title = "CEO" });
+        context.Roles.Add(new Role { Id = 5, Title = "BA" });
     }
 
     context.SaveChanges();

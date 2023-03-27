@@ -20,8 +20,10 @@ namespace GB_Corporation.Data
         public DbSet<Template> Templates { get; set; }
         public DbSet<TestCompetencies> TestCompetencies { get; set; }
         public DbSet<Applicant> Applicants { get; set; }
-        public DbSet<ApplicantHiringData> ApplicantHiringDatas { get; set; }
         public DbSet<HiringData> HiringDatas { get; set; }
+        public DbSet<ApplicantEmployee> ApplicantEmployees { get; set; }
+        public DbSet<HiringInterviewer> HiringInterviewers { get; set; }
+        public DbSet<HiringTestData> HiringTestDatas { get; set; }
         public DbSet<ApplicantForeignLanguageTest> ApplicantForeignLanguageTests { get; set; }
         public DbSet<ApplicantLogicTest> ApplicantLogicTests { get; set; }
         public DbSet<ApplicantProgrammingTest> ApplicantProgrammingTests { get; set; }

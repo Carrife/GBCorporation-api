@@ -6,6 +6,9 @@
         LineManager,
         Admin,
         HR,
-        TeamLeader
+        TeamLeader,
+        Accountant,
+        CEO,
+        BA
     }
 }

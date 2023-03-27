@@ -1,6 +1,6 @@
 ﻿namespace GB_Corporation.DTOs
 {
-    public class ProgrammingTestDTO
+    public class ProgrammingTestDTO : BaseDTO
     {
         public string ProgrammingLanguage { get; set; }
         public int ProgrammingLanguageId { get; set; }

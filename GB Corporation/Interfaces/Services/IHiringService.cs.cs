@@ -4,18 +4,17 @@ namespace GB_Corporation.Interfaces.Services
 {
     public interface IHiringService
     {
-        List<ApplicantHiringDataDTO> ListAll();
+        List<HiringDataDTO> ListAll(int userId, string role);
         List<ShortDTO> ListForeignTestShort(int id);
         List<ShortDTO> ListLogicTestShort(int id);
         List<ShortDTO> ListProgrammingTestShort(int id);
-        void CreateApplicantHiringData(ApplicantHiringDataDTO register);
-        List<ApplicantHiringDataDTO> GetById(int id);
-        void Update(ApplicantHiringDataDTO model);
+        void CreateHiringData(HiringDTO register);
+        HiringDTO GetById(int id);
+        void UpdateDescription(int id, string description);
         bool IsExistsData(int id);
+        public bool IsExistsInterviewData(int id);
         bool IsExistsActiveData(int applicantId);
-        void Hire(HiringDTO id);
+        void Hire(HiringAcceptDTO id);
         void Reject(int id);
-        bool IsExists(string login);
-        bool IsExists(int id);
     }
 }

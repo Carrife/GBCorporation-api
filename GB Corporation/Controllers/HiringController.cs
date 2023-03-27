@@ -12,16 +12,17 @@ namespace GB_Corporation.Controllers
     public class HiringController : ControllerBase
     {
         private readonly IHiringService _hiringService;
+
         public HiringController(IHiringService hiringService)
         {
             _hiringService = hiringService;
         }
 
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, Accountant, BA")]
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([Required][FromHeader] string role, [Required][FromHeader] int userId)
         {
-            return Ok(_hiringService.ListAll());
+            return Ok(_hiringService.ListAll(userId, role));
         }
 
         [Authorize(Roles = "Admin, HR")]
@@ -45,12 +46,12 @@ namespace GB_Corporation.Controllers
             return Ok(_hiringService.ListProgrammingTestShort(id));
         }
 
-        [Authorize(Roles = "Admin, HR")]
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, Accountant, BA")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
         {
             if (!_hiringService.IsExistsData(id))
-                return NotFound();
+                return BadRequest();
 
             var data = _hiringService.GetById(id);
 
@@ -59,7 +60,7 @@ namespace GB_Corporation.Controllers
         
         [Authorize(Roles = "Admin, HR")]
         [HttpPost("Create")]
-        public IActionResult CreateApplicantHiringData([FromBody] ApplicantHiringDataDTO model)
+        public IActionResult CreateApplicantHiringData([FromBody] HiringDTO model)
         {
             if (model == null)
                 return BadRequest();
@@ -67,32 +68,29 @@ namespace GB_Corporation.Controllers
             if (_hiringService.IsExistsActiveData(model.Applicant.Id))
                 return Conflict(new ErrorResponseDTO((int)ErrorResponses.HiringExists));
 
-            _hiringService.CreateApplicantHiringData(model);
+            _hiringService.CreateHiringData(model);
 
             return Ok();
         }
 
-        [Authorize(Roles = "HR, Admin")]
-        [HttpPut("Update")]
-        public IActionResult Update(ApplicantHiringDataDTO model)
+        [Authorize(Roles = "HR, Admin, TeamLeader, LineManager")]
+        [HttpPut("UpdateDescription")]
+        public IActionResult UpdateDescription([Required][FromHeader] int id, [Required][FromHeader] string description)
         {
-            if (model == null)
+            if (!_hiringService.IsExistsInterviewData(id))
                 return BadRequest();
 
-            if (!_hiringService.IsExistsData(model.Id))
-                return NotFound();
-
-            _hiringService.Update(model);
+            _hiringService.UpdateDescription(id, description);
 
             return Ok();
         }
 
         [Authorize(Roles = "HR, Admin")]
         [HttpPut("Reject")]
-        public IActionResult Reject(int id)
+        public IActionResult Reject([Required][FromHeader] int id)
         {
-            if (!_hiringService.IsExists(id))
-                return NotFound();
+            if (!_hiringService.IsExistsData(id))
+                return BadRequest();
 
             _hiringService.Reject(id);
 
@@ -101,10 +99,10 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "HR, Admin")]
         [HttpPut("Hire")]
-        public IActionResult Hire(HiringDTO model)
+        public IActionResult Hire([Required][FromHeader] HiringAcceptDTO model)
         { 
-            if (!_hiringService.IsExists(model.Id))
-                return NotFound();
+            if (!_hiringService.IsExistsData(model.Id))
+                return BadRequest();
 
             _hiringService.Hire(model);
 

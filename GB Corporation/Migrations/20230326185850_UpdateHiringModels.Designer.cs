@@ -3,6 +3,7 @@ using System;
 using GB_Corporation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GB_Corporation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230326185850_UpdateHiringModels")]
+    partial class UpdateHiringModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,16 +304,11 @@ namespace GB_Corporation.Migrations
                     b.Property<int>("InterviewerId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PositionId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("HiringDataId");
 
                     b.HasIndex("InterviewerId");
-
-                    b.HasIndex("PositionId");
 
                     b.ToTable("HiringInterviewers");
                 });
@@ -586,17 +583,9 @@ namespace GB_Corporation.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GB_Corporation.Models.SuperDictionary", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("HiringData");
 
                     b.Navigation("Interviewer");
-
-                    b.Navigation("Position");
                 });
 
             modelBuilder.Entity("GB_Corporation.Models.HiringTestData", b =>
