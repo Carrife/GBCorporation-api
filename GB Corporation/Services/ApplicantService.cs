@@ -37,6 +37,11 @@ namespace GB_Corporation.Services
                     .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
         }
 
+        public ApplicantUpdateDTO GetById(int id)
+        {
+            return AutoMapperExpression.AutoMapApplicantUpdateDTO(_applicantReporitory.GetById(id));
+        }
+
         public List<ShortDTO> ListActiveShort()
         {
             var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus &&
@@ -84,7 +89,7 @@ namespace GB_Corporation.Services
         public bool IsExists(int id) => _applicantReporitory.GetResultSpec(x => x.Any(p => p.Id == id));
 
         public ApplicantTestsDTO GetTestDatas(int id)
-        {
+        {           
             var data = new ApplicantTestsDTO
             {
                 LogicTests = AutoMapperExpression.AutoMapApplicantLogicTestDTO(_applicantLogicTestsRepository
@@ -108,7 +113,7 @@ namespace GB_Corporation.Services
             var test = new ApplicantLogicTest
             {
                 Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
+                Date = DateTime.Parse(model.Date).ToUniversalTime(),
                 ApplicantId = model.ApplicantId
             };
 
@@ -122,7 +127,7 @@ namespace GB_Corporation.Services
                 ForeignLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
                     p.DictionaryId == (int)DictionaryEnum.ForeignLanguage && p.Id == model.ForeignLanguageId).First()).Id,
                 Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
+                Date = DateTime.Parse(model.Date).ToUniversalTime(),
                 ApplicantId = model.ApplicantId
             };
 
@@ -136,7 +141,7 @@ namespace GB_Corporation.Services
                 ProgrammingLanguageId = _superDictionaryRepository.GetResultSpec(x => x.Where(p =>
                     p.DictionaryId == (int)DictionaryEnum.ProgrammingLanguage && p.Id == model.ProgrammingLanguageId).First()).Id,
                 Result = model.Result,
-                Date = model.Date.ToUniversalTime(),
+                Date = DateTime.Parse(model.Date).ToUniversalTime(),
                 ApplicantId = model.ApplicantId
             };
 

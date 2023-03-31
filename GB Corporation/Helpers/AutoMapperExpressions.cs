@@ -13,12 +13,24 @@ namespace GB_Corporation.Helpers
         public static List<ApplicantDTO> AutoMapApplicantDTO(IQueryable<Applicant> entities)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Applicant, ApplicantDTO>();
-                cfg.CreateMap<SuperDictionary, ShortDTO>();
+                cfg.CreateMap<Applicant, ApplicantDTO>()
+                    .ForMember(dist => dist.NameRu, opt => opt.MapFrom(x => $"{x.SurnameRu} {x.NameRu} {x.PatronymicRu}"))
+                    .ForMember(dist => dist.NameEn, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn}"))
+                    .ForMember(dist => dist.Status, opt => opt.MapFrom(x => x.Status.Name));
             });
 
             var mapper = new Mapper(config);
             return mapper.Map<List<ApplicantDTO>>(entities);
+        }
+
+        public static ApplicantUpdateDTO AutoMapApplicantUpdateDTO(Applicant entity)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Applicant, ApplicantUpdateDTO>();
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<ApplicantUpdateDTO>(entity);
         }
 
         public static Applicant AutoMapApplicant(ApplicantDTO entities)
@@ -36,7 +48,7 @@ namespace GB_Corporation.Helpers
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantLogicTest, LogicTestDTO>()
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")));
             });
 
             var mapper = new Mapper(config);
@@ -48,7 +60,7 @@ namespace GB_Corporation.Helpers
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantForeignLanguageTest, ForeignLanguageTestDTO>()
                     .ForMember(dist => dist.ForeignLanguage, opt => opt.MapFrom(x => x.ForeignLanguage.Name))
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")));
             });
 
             var mapper = new Mapper(config);
@@ -60,7 +72,7 @@ namespace GB_Corporation.Helpers
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantProgrammingTest, ProgrammingTestDTO>()
                     .ForMember(dist => dist.ProgrammingLanguage, opt => opt.MapFrom(x => x.ProgrammingLanguage.Name))
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")));
             });
 
             var mapper = new Mapper(config);

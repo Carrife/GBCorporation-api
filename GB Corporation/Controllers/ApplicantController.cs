@@ -25,6 +25,16 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetById")]
+        public IActionResult GetById([Required][FromHeader] int id)
+        {
+            if (!_applicantService.IsExists(id))
+                return BadRequest();
+
+            return Ok(_applicantService.GetById(id));
+        }
+
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetActiveShort")]
         public IActionResult GetActiveShort()
         {
@@ -62,6 +72,9 @@ namespace GB_Corporation.Controllers
         [HttpGet("GetTestDatas")]
         public IActionResult GetTestDatas([Required][FromHeader] int id)
         {
+            if (!_applicantService.IsExists(id))
+                return BadRequest();
+
             return Ok(_applicantService.GetTestDatas(id));
         }
 
@@ -69,7 +82,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("CreateLogicTestData")]
         public IActionResult CreateLogicTestData([FromBody] LogicTestDTO model)
         {
-            if (model == null)
+            if (model == null || !_applicantService.IsExists(model.ApplicantId))
                 return BadRequest();
 
             _applicantService.CreateTestData(model);
@@ -81,7 +94,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("CreateProgrammingTestData")]
         public IActionResult CreateProgrammingTestData([FromBody] ProgrammingTestDTO model)
         {
-            if (model == null)
+            if (model == null || !_applicantService.IsExists(model.ApplicantId))
                 return BadRequest();
 
             _applicantService.CreateTestData(model);
@@ -93,7 +106,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("CreateForeignLanguageTestData")]
         public IActionResult CreateForeignLanguageTestData([FromBody] ForeignLanguageTestDTO model)
         {
-            if (model == null)
+            if (model == null || !_applicantService.IsExists(model.ApplicantId))
                 return BadRequest();
 
             _applicantService.CreateTestData(model);

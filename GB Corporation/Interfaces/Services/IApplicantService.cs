@@ -5,6 +5,7 @@ namespace GB_Corporation.Interfaces.Services
     public interface IApplicantService
     {
         List<ApplicantDTO> ListAll();
+        ApplicantUpdateDTO GetById(int id);
         List<ShortDTO> ListActiveShort();
         void Create(ApplicantCreateDTO register);
         bool IsExists(string login);
