@@ -1,4 +1,4 @@
-﻿namespace GB_Corporation.DTOs.EmployeeDTOs
+﻿namespace GB_Corporation.DTOs
 {
     public class EmployeeGetUserDTO
     {

@@ -1,4 +1,4 @@
-﻿namespace GB_Corporation.DTOs.TestCompetenciesDTOs
+﻿namespace GB_Corporation.DTOs
 {
     public class TestCompleteDTO
     {

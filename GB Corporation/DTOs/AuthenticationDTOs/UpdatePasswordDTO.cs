@@ -1,4 +1,4 @@
-﻿namespace GB_Corporation.DTOs.AuthenticationDTOs
+﻿namespace GB_Corporation.DTOs
 {
     public class UpdatePasswordDTO
     {

@@ -1,8 +1,5 @@
 ﻿using AutoMapper;
 using GB_Corporation.DTOs;
-using GB_Corporation.DTOs.EmployeeDTOs;
-using GB_Corporation.DTOs.TemplateDTOs;
-using GB_Corporation.DTOs.TestCompetenciesDTOs;
 using GB_Corporation.Models;
 
 namespace GB_Corporation.Helpers
@@ -69,51 +66,31 @@ namespace GB_Corporation.Helpers
         }
 
         //Employee
-        public static List<EmployeeDTO> AutoMapEmployee(IQueryable<Employee> entities)
+        public static List<EmployeeDTO> AutoMapEmployeeDTO(IQueryable<Employee> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Employee, EmployeeDTO>()
-                    .ForMember(dist => dist.Department, opt => opt.MapFrom(x => x.Department))
-                    .ForMember(dist => dist.Language, opt => opt.MapFrom(x => x.Language))
-                    .ForMember(dist => dist.Role, opt => opt.MapFrom(x => x.Role));
-                cfg.CreateMap<Role, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => x.Title));
-                cfg.CreateMap<SuperDictionary, ShortDTO>();
+                    .ForMember(dist => dist.NameRu, opt => opt.MapFrom(x => $"{x.SurnameRu} {x.NameRu} {x.PatronymicRu}"))
+                    .ForMember(dist => dist.NameEn, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn}"))
+                    .ForMember(dist => dist.Status, opt => opt.MapFrom(x => x.Status.Name))
+                    .ForMember(dist => dist.Department, opt => opt.MapFrom(x => x.Department.Name))
+                    .ForMember(dist => dist.Position, opt => opt.MapFrom(x => x.Position.Name));
             });
 
             var mapper = new Mapper(config);
             return mapper.Map<List<EmployeeDTO>>(entities);
         }
 
-        public static EmployeeDTO AutoMapEmployee(Employee entities)
+        public static EmployeeGetDTO AutoMapEmployeeGetDTO(Employee entity)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Employee, EmployeeDTO>()
-                    .ForMember(dist => dist.Department, opt => opt.MapFrom(x => x.Department))
-                    .ForMember(dist => dist.Language, opt => opt.MapFrom(x => x.Language))
-                    .ForMember(dist => dist.Role, opt => opt.MapFrom(x => x.Role));
-                cfg.CreateMap<Role, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => x.Title));
+                cfg.CreateMap<Employee, EmployeeGetDTO>();
                 cfg.CreateMap<SuperDictionary, ShortDTO>();
+                    
             });
 
             var mapper = new Mapper(config);
-
-            return mapper.Map<EmployeeDTO>(entities);
-        }
-
-        public static Employee AutoMapEmployee(EmployeeUpdateDTO entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<EmployeeUpdateDTO, Employee>()
-                    .ForMember(dist => dist.Department, opt => opt.MapFrom(x => x.Department))
-                    .ForMember(dist => dist.Language, opt => opt.MapFrom(x => x.Language));
-                cfg.CreateMap<ShortDTO, SuperDictionary>();
-            });
-
-            var mapper = new Mapper(config);
-
-            return mapper.Map<Employee>(entities);
+            return mapper.Map<EmployeeGetDTO>(entity);
         }
 
         //Template

@@ -1,4 +1,4 @@
-﻿using GB_Corporation.DTOs.TestCompetenciesDTOs;
+﻿using GB_Corporation.DTOs;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
@@ -20,7 +20,7 @@ namespace GB_Corporation.Services
         {
             var questions = new List<CompetenciesTestDTO>();
 
-            XmlDocument xDoc = new XmlDocument();
+            var xDoc = new XmlDocument();
             xDoc.Load(docPath);
 
             XmlElement? xRoot = xDoc.DocumentElement;
@@ -28,7 +28,7 @@ namespace GB_Corporation.Services
             {
                 foreach (XmlElement xnode in xRoot)
                 {
-                    CompetenciesTestDTO question = new CompetenciesTestDTO();
+                    var question = new CompetenciesTestDTO();
 
                     XmlNode? attr = xnode.Attributes.GetNamedItem("name");
                     question.Question = attr?.Value;
@@ -38,7 +38,7 @@ namespace GB_Corporation.Services
                     {
                         if (childnode.Name == "correctAnswer")
                         {
-                            TestAnswersDTO answer = new TestAnswersDTO
+                            var answer = new TestAnswersDTO
                             {
                                 Answer = childnode.InnerText,
                                 IsCorrect = true
@@ -49,7 +49,7 @@ namespace GB_Corporation.Services
                            
                         if (childnode.Name == "answer")
                         {
-                            TestAnswersDTO answer = new TestAnswersDTO
+                            var answer = new TestAnswersDTO
                             {
                                 Answer = childnode.InnerText,
                                 IsCorrect = false
@@ -70,7 +70,7 @@ namespace GB_Corporation.Services
         {
             int employeeId = _employeeReporitory.GetListResultSpec(x => x.Where(p => p.NameEn+" "+p.SurnameEn == model.User)).First().Id;
 
-            TestCompetencies competence = new TestCompetencies
+            var competence = new TestCompetencies
             {
                 Title = model.Title,
                 TestResult = model.Result,

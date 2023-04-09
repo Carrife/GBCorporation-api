@@ -1,4 +1,4 @@
-﻿namespace GB_Corporation.DTOs.TemplateDTOs
+﻿namespace GB_Corporation.DTOs
 {
     public class TemplateDTO
     {

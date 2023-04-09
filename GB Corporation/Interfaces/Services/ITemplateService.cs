@@ -1,4 +1,4 @@
-﻿using GB_Corporation.DTOs.TemplateDTOs;
+﻿using GB_Corporation.DTOs;
 
 namespace GB_Corporation.Interfaces.Services
 {

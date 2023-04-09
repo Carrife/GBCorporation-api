@@ -1,4 +1,4 @@
-﻿using GB_Corporation.DTOs.AuthenticationDTOs;
+﻿using GB_Corporation.DTOs;
 using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;

@@ -1,5 +1,4 @@
-﻿using GB_Corporation.DTOs.AuthenticationDTOs;
-using GB_Corporation.DTOs.EmployeeDTOs;
+﻿using GB_Corporation.DTOs;
 using GB_Corporation.Enums;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;

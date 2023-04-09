@@ -1,4 +1,4 @@
-﻿using GB_Corporation.DTOs.TestCompetenciesDTOs;
+﻿using GB_Corporation.DTOs;
 
 namespace GB_Corporation.Interfaces.Services
 {

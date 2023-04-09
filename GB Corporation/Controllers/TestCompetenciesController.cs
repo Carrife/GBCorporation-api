@@ -1,4 +1,4 @@
-﻿using GB_Corporation.DTOs.TestCompetenciesDTOs;
+﻿using GB_Corporation.DTOs;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
