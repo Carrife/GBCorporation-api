@@ -2,9 +2,9 @@
 {
     public class HiringDataDTO : BaseDTO
     {
-        public ShortDTO Applicant { get; set; }
-        public DateTime Date { get; set; }
-        public ShortDTO Position { get; set; }
-        public ShortDTO Status { get; set; }
+        public string Applicant { get; set; }
+        public string Date { get; set; }
+        public string Position { get; set; }
+        public string Status { get; set; }
     }
 }

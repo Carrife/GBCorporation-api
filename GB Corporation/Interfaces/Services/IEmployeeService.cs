@@ -7,8 +7,6 @@ namespace GB_Corporation.Interfaces.Services
     {
         bool IsExists (int id);
         List<EmployeeDTO> ListAll();
-        List<ShortDTO> ListLMShort();
-        List<ShortDTO> ListTLShort();
         void Delete(int id);
         void Update(EmployeeUpdateDTO model);
         EmployeeWithTestsDTO GetById(int id);

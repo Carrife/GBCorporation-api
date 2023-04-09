@@ -11,5 +11,10 @@
         /// An existing record with the same applicant was already found.
         /// </summary>
         HiringExists,
+
+        /// <summary>
+        /// Request data is not valid
+        /// </summary>
+        InvalidData,
     }
 }

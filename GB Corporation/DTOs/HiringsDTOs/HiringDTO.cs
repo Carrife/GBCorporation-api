@@ -3,12 +3,12 @@
     public class HiringDTO : BaseDTO
     {
         public ShortDTO Applicant { get; set; }
-        public DateTime Date { get; set; }
-        public ShortDTO Position { get; set; }
-        public ShortDTO Status { get; set; }
+        public string Date { get; set; }
+        public string Position { get; set; }
+        public string Status { get; set; }
         public List<HiringInterviewerDTO> Interviewers { get; set; }
-        public ForeignLanguageTestDTO ForeignLanguageTest { get; set; }
-        public LogicTestDTO LogicTest { get; set; }
-        public ProgrammingTestDTO ProgrammingTest { get; set; }
+        public ShortDTO ForeignLanguageTest { get; set; }
+        public ShortDTO LogicTest { get; set; }
+        public ShortDTO ProgrammingTest { get; set; }
     }
 }

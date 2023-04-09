@@ -68,9 +68,10 @@ using(AppDbContext context = new())
         context.Roles.Add(new Role { Id = 3, Title = "Admin" });
         context.Roles.Add(new Role { Id = 4, Title = "TeamLeader" });
         context.Roles.Add(new Role { Id = 5, Title = "HR" });
-        context.Roles.Add(new Role { Id = 3, Title = "Accountant" });
-        context.Roles.Add(new Role { Id = 4, Title = "CEO" });
-        context.Roles.Add(new Role { Id = 5, Title = "BA" });
+        context.Roles.Add(new Role { Id = 6, Title = "Accountant" });
+        context.Roles.Add(new Role { Id = 7, Title = "CEO" });
+        context.Roles.Add(new Role { Id = 8, Title = "BA" });
+        context.Roles.Add(new Role { Id = 9, Title = "ChiefAccountant" });
     }
 
     context.SaveChanges();

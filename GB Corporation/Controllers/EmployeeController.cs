@@ -23,20 +23,6 @@ namespace GB_Corporation.Controllers
             return Ok(_employeeService.ListAll());
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
-        [HttpGet("GetLMShort")]
-        public IActionResult GetLMShort()
-        {
-            return Ok(_employeeService.ListLMShort());
-        }
-
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
-        [HttpGet("GetTLShort")]
-        public IActionResult GetTLShort()
-        {
-            return Ok(_employeeService.ListTLShort());
-        }
-
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)

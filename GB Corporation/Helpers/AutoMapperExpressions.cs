@@ -33,17 +33,6 @@ namespace GB_Corporation.Helpers
             return mapper.Map<ApplicantUpdateDTO>(entity);
         }
 
-        public static Applicant AutoMapApplicant(ApplicantDTO entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ApplicantDTO, Applicant>();
-                cfg.CreateMap<ShortDTO, SuperDictionary>();
-            });
-
-            var mapper = new Mapper(config);
-            return mapper.Map<Applicant>(entities);
-        }
-
         public static List<LogicTestDTO> AutoMapApplicantLogicTestDTO(IQueryable<ApplicantLogicTest> entities)
         {
             var config = new MapperConfiguration(cfg => {
@@ -77,41 +66,6 @@ namespace GB_Corporation.Helpers
 
             var mapper = new Mapper(config);
             return mapper.Map<List<ProgrammingTestDTO>>(entities);
-        }
-
-        public static LogicTestDTO AutoMapApplicantLogicTestDTO(ApplicantLogicTest entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ApplicantLogicTest, LogicTestDTO>()
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
-            });
-
-            var mapper = new Mapper(config);
-            return mapper.Map<LogicTestDTO>(entities);
-        }
-
-        public static ForeignLanguageTestDTO AutoMapApplicantForeignLanguageTestDTO(ApplicantForeignLanguageTest entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ApplicantForeignLanguageTest, ForeignLanguageTestDTO>()
-                    .ForMember(dist => dist.ForeignLanguage, opt => opt.MapFrom(x => x.ForeignLanguage.Name))
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
-            });
-
-            var mapper = new Mapper(config);
-            return mapper.Map<ForeignLanguageTestDTO>(entities);
-        }
-
-        public static ProgrammingTestDTO AutoMapApplicantProgrammingTestDTO(ApplicantProgrammingTest entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<ApplicantProgrammingTest, ProgrammingTestDTO>()
-                    .ForMember(dist => dist.ProgrammingLanguage, opt => opt.MapFrom(x => x.ProgrammingLanguage.Name))
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
-            });
-
-            var mapper = new Mapper(config);
-            return mapper.Map<ProgrammingTestDTO>(entities);
         }
 
         //Employee
@@ -213,10 +167,10 @@ namespace GB_Corporation.Helpers
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<HiringData, HiringDataDTO>()
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
-                cfg.CreateMap<SuperDictionary, ShortDTO>();
-                cfg.CreateMap<Applicant, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn} ({x.Login})"));
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")))
+                    .ForMember(dist => dist.Applicant, opt => opt.MapFrom(x => $"{x.Applicant.NameEn} {x.Applicant.SurnameEn} ({x.Applicant.Login})"))
+                    .ForMember(dist => dist.Position, opt => opt.MapFrom(x => x.Position.Name))
+                    .ForMember(dist => dist.Status, opt => opt.MapFrom(x => x.Status.Name));
             });
 
             var mapper = new Mapper(config);
@@ -227,10 +181,11 @@ namespace GB_Corporation.Helpers
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<HiringData, HiringDTO>()
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.AddDays(1)));
-                cfg.CreateMap<SuperDictionary, ShortDTO>();
-                cfg.CreateMap<Applicant, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn} ({x.Login})"));
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")))
+                    .ForPath(dist => dist.Applicant.Name, opt => opt.MapFrom(x => $"{x.Applicant.NameEn} {x.Applicant.SurnameEn} ({x.Applicant.Login})"))
+                    .ForPath(dist => dist.Applicant.Id, opt => opt.MapFrom(x => x.ApplicantId))
+                    .ForMember(dist => dist.Position, opt => opt.MapFrom(x => x.Position.Name))
+                    .ForMember(dist => dist.Status, opt => opt.MapFrom(x => x.Status.Name));
             });
 
             var mapper = new Mapper(config);
@@ -240,14 +195,28 @@ namespace GB_Corporation.Helpers
         public static List<HiringInterviewerDTO> AutoMapHiringInterviewerDTO(IQueryable<HiringInterviewer> entities)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<HiringInterviewer, HiringInterviewerDTO>();
-                cfg.CreateMap<SuperDictionary, ShortDTO>();
-                cfg.CreateMap<Applicant, ShortDTO>()
+                cfg.CreateMap<HiringInterviewer, HiringInterviewerDTO>()
+                    .ForMember(dist => dist.Interviewer, opt => opt.MapFrom(x => x.Interviewer))
+                    .ForMember(dist => dist.Description, opt => opt.MapFrom(x => x.Description))
+                    .ForMember(dist => dist.Position, opt => opt.MapFrom(x => x.Position));
+                cfg.CreateMap<Role, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => x.Title)); ;
+                cfg.CreateMap<Employee, ShortDTO>()
                     .ForMember(dist => dist.Name, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn} ({x.Login})"));
             });
 
             var mapper = new Mapper(config);
             return mapper.Map<List<HiringInterviewerDTO>>(entities);
+        }
+
+        public static HiringAcceptDTO AutoMapHiringAcceptDTO(Applicant entity)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Applicant, HiringAcceptDTO>();
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<HiringAcceptDTO>(entity);
         }
 
         //ShortDTO
@@ -298,23 +267,47 @@ namespace GB_Corporation.Helpers
             return mapper.Map<List<ShortDTO>>(entities);
         }
 
+        public static ShortDTO AutoMapShortDTO(Employee entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Employee, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.NameEn} {src.SurnameEn} ({src.Login})"));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<ShortDTO>(entities);
+        }
+
         public static List<ShortDTO> AutoMapShortDTO(IQueryable<ApplicantForeignLanguageTest> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantForeignLanguageTest, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ForeignLanguage.Name} - {src.Result}% ({src.Date.AddDays(1).ToShortDateString()})"));
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ForeignLanguage.Name} - {src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
             });
 
             var mapper = new Mapper(config);
 
             return mapper.Map<List<ShortDTO>>(entities);
+        }
+
+        public static ShortDTO AutoMapShortDTO(ApplicantForeignLanguageTest entity)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ApplicantForeignLanguageTest, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ForeignLanguage.Name} - {src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<ShortDTO>(entity);
         }
 
         public static List<ShortDTO> AutoMapShortDTO(IQueryable<ApplicantLogicTest> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantLogicTest, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.Result}% ({src.Date.AddDays(1).ToShortDateString()})"));
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
             });
 
             var mapper = new Mapper(config);
@@ -322,16 +315,40 @@ namespace GB_Corporation.Helpers
             return mapper.Map<List<ShortDTO>>(entities);
         }
 
+        public static ShortDTO AutoMapShortDTO(ApplicantLogicTest entity)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ApplicantLogicTest, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<ShortDTO>(entity);
+        }
+
         public static List<ShortDTO> AutoMapShortDTO(IQueryable<ApplicantProgrammingTest> entities)
         {
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<ApplicantProgrammingTest, ShortDTO>()
-                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ProgrammingLanguage.Name} - {src.Result}% ({src.Date.AddDays(1).ToShortDateString()})"));
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ProgrammingLanguage.Name} - {src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
             });
 
             var mapper = new Mapper(config);
 
             return mapper.Map<List<ShortDTO>>(entities);
+        }
+
+        public static ShortDTO AutoMapShortDTO(ApplicantProgrammingTest entity)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<ApplicantProgrammingTest, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(src => $"{src.ProgrammingLanguage.Name} - {src.Result}% ({src.Date.ToString("yyyy-MM-dd")})"));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<ShortDTO>(entity);
         }
     }
 }

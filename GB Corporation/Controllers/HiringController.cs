@@ -18,7 +18,7 @@ namespace GB_Corporation.Controllers
             _hiringService = hiringService;
         }
 
-        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, Accountant, BA")]
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
         [HttpGet("GetAll")]
         public IActionResult GetAll([Required][FromHeader] string role, [Required][FromHeader] int userId)
         {
@@ -26,27 +26,34 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin, HR")]
-        [HttpGet("GetForeignTestShort")]
-        public IActionResult GetForeignTestShort([Required][FromHeader] int id)
+        [HttpGet("GetInterviewers")]
+        public IActionResult GetInterviewers()
         {
-            return Ok(_hiringService.ListForeignTestShort(id));
+            return Ok(_hiringService.GetInterviewers());
         }
 
         [Authorize(Roles = "Admin, HR")]
-        [HttpGet("GetLogicTestShort")]
-        public IActionResult GetLogicTestShort([Required][FromHeader] int id)
+        [HttpGet("GetTestData")]
+        public IActionResult GetTestData([Required][FromHeader] int id)
         {
-            return Ok(_hiringService.ListLogicTestShort(id));
+            return Ok(_hiringService.ListTestShort(id));
         }
 
         [Authorize(Roles = "Admin, HR")]
-        [HttpGet("GetProgrammingTestShort")]
-        public IActionResult GetProgrammingTestShort([Required][FromHeader] int id)
+        [HttpGet("GetInterviewerPositions")]
+        public IActionResult GetInterviewerPositions()
         {
-            return Ok(_hiringService.ListProgrammingTestShort(id));
+            return Ok(_hiringService.GetInterviewerPositions());
         }
 
-        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, Accountant, BA")]
+        [Authorize(Roles = "Admin, HR")]
+        [HttpGet("GetPositions")]
+        public IActionResult GetPositions()
+        {
+            return Ok(_hiringService.GetPositions());
+        }
+
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
         {
@@ -60,15 +67,18 @@ namespace GB_Corporation.Controllers
         
         [Authorize(Roles = "Admin, HR")]
         [HttpPost("Create")]
-        public IActionResult CreateApplicantHiringData([FromBody] HiringDTO model)
+        public IActionResult Create([FromBody] HiringCreateDTO model)
         {
             if (model == null)
                 return BadRequest();
 
-            if (_hiringService.IsExistsActiveData(model.Applicant.Id))
+            if (_hiringService.IsExistsActiveData(model.ApplicantId))
                 return Conflict(new ErrorResponseDTO((int)ErrorResponses.HiringExists));
 
-            _hiringService.CreateHiringData(model);
+            if (_hiringService.CheckCreateData(model))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidData));
+
+            _hiringService.Create(model);
 
             return Ok();
         }
@@ -85,6 +95,18 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
+        [HttpGet("GetApplicantHiringData")]
+        public IActionResult GetApplicantHiringData([Required][FromHeader] int id)
+        {
+            if (!_hiringService.IsExistsData(id))
+                return BadRequest();
+
+            var data = _hiringService.GetApplicantHiringData(id);
+
+            return Ok(data);
+        }
+
         [Authorize(Roles = "HR, Admin")]
         [HttpPut("Reject")]
         public IActionResult Reject([Required][FromHeader] int id)
@@ -99,7 +121,7 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "HR, Admin")]
         [HttpPut("Hire")]
-        public IActionResult Hire([Required][FromHeader] HiringAcceptDTO model)
+        public IActionResult Hire([FromBody] HiringAcceptDTO model)
         { 
             if (!_hiringService.IsExistsData(model.Id))
                 return BadRequest();

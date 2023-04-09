@@ -8,6 +8,7 @@
         HR,
         TeamLeader,
         Accountant,
+        ChiefAccountant,
         CEO,
         BA
     }

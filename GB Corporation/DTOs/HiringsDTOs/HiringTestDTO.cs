@@ -1,9 +1,9 @@
 ﻿namespace GB_Corporation.DTOs
 {
-    public class HiringTestDTO : BaseDTO
+    public class HiringTestDTO
     {
-        public string Title { get; set; }
-        public int Result { get; set; }
-        public DateTime Date { get; set; }
+        public List<ShortDTO> ForeignTest { get; set; }
+        public List<ShortDTO> LogicTest { get; set; }
+        public List<ShortDTO> ProgrammingTest { get; set; }
     }
 }

@@ -8,6 +8,6 @@
         public int HiringDataId { get; set; }
         public Employee Interviewer { get; set; }
         public HiringData HiringData { get; set; }
-        public SuperDictionary Position { get; set; }
+        public Role Position { get; set; }
     }
 }

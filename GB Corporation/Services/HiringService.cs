@@ -19,12 +19,13 @@ namespace GB_Corporation.Services
         private readonly IRepository<ApplicantForeignLanguageTest> _foreignLanguageTestRepository;
         private readonly IRepository<ApplicantLogicTest> _logicTestRepository;
         private readonly IRepository<ApplicantProgrammingTest> _programmingTestRepository;
+        private readonly IRepository<Role> _roleRepository;
 
         public HiringService(IRepository<Employee> employeeRepository, IRepository<Applicant> applicantReporitory,
              IRepository<HiringInterviewer> hiringInterviewerRepository, IRepository<SuperDictionary> superDictionaryRepository,
              IRepository<HiringData> hiringDataRepository, IRepository<ApplicantForeignLanguageTest> foreignLanguageTestRepository,
              IRepository<ApplicantLogicTest> logicTestRepository, IRepository<ApplicantProgrammingTest> programmingTestRepository,
-             IRepository<HiringTestData> hiringTestDataRepository)
+             IRepository<HiringTestData> hiringTestDataRepository, IRepository<Role> roleRepository)
         {
             _employeeRepository = employeeRepository;
             _applicantReporitory = applicantReporitory;
@@ -35,99 +36,201 @@ namespace GB_Corporation.Services
             _logicTestRepository = logicTestRepository;
             _programmingTestRepository = programmingTestRepository;
             _hiringTestDataRepository = hiringTestDataRepository;
+            _roleRepository = roleRepository;
         }
 
         public List<HiringDataDTO> ListAll(int userId, string role)
         {
-            if(role == nameof(RoleEnum.Admin) || role == nameof(RoleEnum.HR))
+            if (role == nameof(RoleEnum.Admin) || role == nameof(RoleEnum.HR))
             {
                 return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x)
                    .Include(x => x.Applicant)
                    .Include(x => x.Position)
                    .Include(x => x.Status)
-                   .OrderBy(x => x.Date));
+                   .OrderBy(x => x.Applicant.NameEn).ThenBy(x => x.Applicant.SurnameEn));
             }
             else
             {
-               var hiringDataIds = _hiringInterviewerRepository.GetListResultSpec(x => x.Where(p => p.InterviewerId == userId)).ToDictionary(k => k.HiringDataId, v => v.Id);
-               return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(p => hiringDataIds.ContainsKey(p.Id)))
-                   .Include(x => x.Applicant)
-                   .Include(x => x.Position)
-                   .Include(x => x.Status)
-                   .OrderBy(x => x.Date));
+                var hiringDataIds = _hiringInterviewerRepository.GetListResultSpec(x => x.Where(p => p.InterviewerId == userId)).ToDictionary(k => k.HiringDataId, v => v.Id);
+                return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(p => hiringDataIds.ContainsKey(p.Id)))
+                    .Include(x => x.Applicant)
+                    .Include(x => x.Position)
+                    .Include(x => x.Status)
+                    .OrderBy(x => x.Applicant.NameEn).ThenBy(x => x.Applicant.SurnameEn));
             }
         }
 
-        public List<ShortDTO> ListForeignTestShort(int id)
+        public InterviewersDTO GetInterviewers()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_foreignLanguageTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
-                    .Include(x => x.ForeignLanguage)
+            var teamLeaderRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.TeamLeader))).First().Id;
+            var lineManagerRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.LineManager))).First().Id;
+            var hrRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.HR))).First().Id;
+            var ceoRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.CEO))).First().Id;
+            var chiefAccountantRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.ChiefAccountant))).First().Id;
+            var baRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.BA))).First().Id;
+            var adminRole = _roleRepository.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.Admin))).First().Id;
+
+            var teamLeaders = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == teamLeaderRole))
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+            var lineManagers = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == lineManagerRole))
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+            var hrs = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == hrRole))
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+            var ceo = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetResultSpec(x => x.Where(p => p.RoleId == ceoRole).FirstOrDefault()));
+            var chiefAccountant = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetResultSpec(x => x.Where(p => p.RoleId == chiefAccountantRole).FirstOrDefault()));
+            var bas = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == baRole))
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+            var admins = AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == adminRole))
+                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+
+            var interviewers = new InterviewersDTO
+            {
+                TeamLeaders = teamLeaders,
+                LineManagers = lineManagers,
+                HRs = hrs,
+                CEO = ceo,
+                ChiefAccountant = chiefAccountant,
+                BAs = bas,
+                Admins = admins,
+            };
+
+            return interviewers;
+        }
+
+        public HiringTestDTO ListTestShort(int id)
+        {
+            var foreignTest = AutoMapperExpression.AutoMapShortDTO(_foreignLanguageTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
+                .Include(x => x.ForeignLanguage)
                 .OrderBy(x => x.ForeignLanguage)
                 .OrderByDescending(x => x.Date));
-        }
 
-        public List<ShortDTO> ListLogicTestShort(int id)
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_logicTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
+            var logicTest = AutoMapperExpression.AutoMapShortDTO(_logicTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
                 .OrderByDescending(x => x.Date));
-        }
 
-        public List<ShortDTO> ListProgrammingTestShort(int id)
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_programmingTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
-                    .Include(x => x.ProgrammingLanguage)
+            var programmingTest = AutoMapperExpression.AutoMapShortDTO(_programmingTestRepository.GetListResultSpec(x => x.Where(p => p.ApplicantId == id))
+                .Include(x => x.ProgrammingLanguage)
                 .OrderBy(x => x.ProgrammingLanguage)
                 .OrderByDescending(x => x.Date));
+
+            var tests = new HiringTestDTO
+            {
+                ForeignTest = foreignTest,
+                LogicTest = logicTest,
+                ProgrammingTest = programmingTest,
+            };
+
+            return tests;
+        }
+
+        public List<ShortDTO> GetInterviewerPositions()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x.Where(p => (p.Title != nameof(RoleEnum.Accountant)) && (p.Title != nameof(RoleEnum.Developer)))));
+        }
+
+        public List<ShortDTO> GetPositions()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Position)));
         }
 
         public bool IsExistsActiveData(int applicantId)
         {
-            var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus && 
+            var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus &&
                 p.Name == nameof(HiringStatusEnum.Open))).First().Id;
             return _hiringDataRepository.GetResultSpec(x => x.Any(p => p.ApplicantId == applicantId && p.StatusId == statusId));
         }
 
         public bool IsExistsData(int id) => _hiringDataRepository.GetResultSpec(x => x.Any(p => p.Id == id));
         public bool IsExistsInterviewData(int id) => _hiringInterviewerRepository.GetResultSpec(x => x.Any(p => p.Id == id));
+        public bool CheckCreateData(HiringCreateDTO model)
+        {
+            bool foreignLanguage = false;
+            bool logic = false;
+            bool programming = false;
+
+            if (model.ForeignLanguageTestId.HasValue)
+            {
+                if (_foreignLanguageTestRepository.GetResultSpec(x => x.Any(p => (int)model.ForeignLanguageTestId == p.Id)))
+                    foreignLanguage = true;
+            }
+
+            if (model.LogicTestId.HasValue)
+            {
+                if (_logicTestRepository.GetResultSpec(x => x.Any(p => (int)model.LogicTestId == p.Id)))
+                    logic = true;
+            }
+
+            if (model.ProgrammingTestId.HasValue)
+            {
+                if (_programmingTestRepository.GetResultSpec(x => x.Any(p => (int)model.ProgrammingTestId == p.Id)))
+                    programming = true;
+            }
+
+            var employees = _employeeRepository.GetListResultSpec(x => x).Select(x => x.Id);
+
+            if (_applicantReporitory.GetResultSpec(x => x.Any(p => p.Id == model.ApplicantId)) &&
+                _superDictionaryRepository.GetResultSpec(x => x.Any(p => p.Id == model.PositionId)) &&
+                model.Interviewers.All(x => employees.Contains(x)) && foreignLanguage && logic && programming)
+                return false;
+            else
+                return true;
+        }
 
         public HiringDTO GetById(int id)
         {
-            var data = AutoMapperExpression.AutoMapHiringDTO(_hiringDataRepository.GetResultSpec(x => x.Where(p => p.Id == id).First()));
-            
-            var testData = _hiringTestDataRepository.GetResultSpec(x => x.Where(p => p.HiringDataId == id).First());
+            var data = AutoMapperExpression.AutoMapHiringDTO(_hiringDataRepository.GetResultSpec(x => x.Where(p => p.Id == id)
+                .Include(x => x.Applicant)
+                .Include(x => x.Status)
+                .Include(x => x.Position))
+                .First());
 
-            data.ForeignLanguageTest = AutoMapperExpression.AutoMapApplicantForeignLanguageTestDTO(testData.ForeignLanguageTest);
-            data.ProgrammingTest = AutoMapperExpression.AutoMapApplicantProgrammingTestDTO(testData.ProgrammingTest);
-            data.LogicTest = AutoMapperExpression.AutoMapApplicantLogicTestDTO(testData.LogicTest);
+            var testData = _hiringTestDataRepository.GetResultSpec(x => x.Where(p => p.HiringDataId == id)
+                .Include(x => x.LogicTest)
+                .Include(x => x.ProgrammingTest).ThenInclude(x => x.ProgrammingLanguage)
+                .Include(x => x.ForeignLanguageTest).ThenInclude(x => x.ForeignLanguage)
+                .First());
+
+            data.ForeignLanguageTest = AutoMapperExpression.AutoMapShortDTO(testData.ForeignLanguageTest);
+            data.ProgrammingTest = AutoMapperExpression.AutoMapShortDTO(testData.ProgrammingTest);
+            data.LogicTest = AutoMapperExpression.AutoMapShortDTO(testData.LogicTest);
 
             data.Interviewers = AutoMapperExpression.AutoMapHiringInterviewerDTO(
                 _hiringInterviewerRepository.GetListResultSpec(x => x.Where(p => p.HiringDataId == id)
                     .Include(x => x.Interviewer)
                     .Include(x => x.Position)));
-            
+
             return data;
         }
 
-        public void CreateHiringData(HiringDTO data)
+        public HiringAcceptDTO GetApplicantHiringData(int id)
+        {
+            var hiring = _hiringDataRepository.GetById(id);
+            var data = AutoMapperExpression.AutoMapHiringAcceptDTO(_applicantReporitory.GetResultSpec(x => x.Where(p => p.Id == hiring.ApplicantId).First()));
+
+            data.PositionId = hiring.PositionId;
+
+            return data;
+        }
+
+        public void Create(HiringCreateDTO data)
         {
             var hitingStatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus &&
                 p.Name == nameof(HiringStatusEnum.Open))).First().Id;
 
             var hiringData = new HiringData
             {
-                ApplicantId = data.Applicant.Id,
+                ApplicantId = data.ApplicantId,
                 Date = data.Date,
-                PositionId = data.Position.Id,
+                PositionId = data.PositionId,
                 StatusId = hitingStatusId
             };
-            
+
             var hiringDataId = _hiringDataRepository.Create(hiringData).Id;
 
             var hiringTestData = new HiringTestData
             {
-                ForeignLanguageTestId = data.ForeignLanguageTest.Id,
-                ProgrammingTestId = data.ProgrammingTest.Id,
-                LogicTestId = data.LogicTest.Id,
+                ForeignLanguageTestId = data.ForeignLanguageTestId,
+                ProgrammingTestId = data.ProgrammingTestId,
+                LogicTestId = data.LogicTestId,
                 HiringDataId = hiringDataId
             };
 
@@ -135,19 +238,21 @@ namespace GB_Corporation.Services
 
             foreach (var item in data.Interviewers)
             {
+                var positionId = _employeeRepository.GetResultSpec(x => x.Where(p => p.Id == item).First()).RoleId;
+
                 var hiringInterviewer = new HiringInterviewer
                 {
-                    InterviewerId = item.Interviewer.Id,
+                    InterviewerId = item,
                     Description = null,
                     HiringDataId = hiringDataId,
-                    PositionId = item.Position.Id,
+                    PositionId = positionId.Value,
                 };
 
                 _hiringInterviewerRepository.Create(hiringInterviewer);
             }
 
-            var applicant = _applicantReporitory.GetResultSpec(x => x.Where(p => p.Id == data.Applicant.Id)).First();
-            
+            var applicant = _applicantReporitory.GetResultSpec(x => x.Where(p => p.Id == data.ApplicantId)).First();
+
             applicant.StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus &&
                 p.Name == nameof(ApplicantStatusEnum.InProgress))).First().Id;
 
@@ -168,29 +273,27 @@ namespace GB_Corporation.Services
 
         public void Hire(HiringAcceptDTO model)
         {
-            var applicant = _applicantReporitory.GetById(model.ApplicantId);
-            
-            applicant.StatusId = _superDictionaryRepository.GetResultSpec(x =>
-                x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Hired))).First().Id;
+            var hiringData = _hiringDataRepository.GetById(model.Id);
+            var applicant = _applicantReporitory.GetById(hiringData.ApplicantId);
 
             var employeeActiveStatusId = _superDictionaryRepository.GetResultSpec(x =>
                 x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == nameof(EmployeeStatusEnum.Active))).First().Id;
 
             bool isEmployeeExist = _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == applicant.Login));
 
-            if(isEmployeeExist)
+            if (isEmployeeExist)
             {
                 var employee = _employeeRepository.GetResultSpec(x => x.Where(p => p.Login == applicant.Login)).First();
-                employee.NameRu = applicant.NameRu;
-                employee.SurnameRu = applicant.SurnameRu;
-                employee.PatronymicRu = applicant.PatronymicRu;
-                employee.NameEn = applicant.NameEn;
-                employee.SurnameEn = applicant.SurnameEn;
-                employee.Phone = applicant.Phone;
+                employee.NameRu = model.NameRu;
+                employee.SurnameRu = model.SurnameRu;
+                employee.PatronymicRu = model.PatronymicRu;
+                employee.NameEn = model.NameEn;
+                employee.SurnameEn = model.SurnameEn;
+                employee.Phone = model.Phone;
                 employee.StatusId = employeeActiveStatusId;
                 employee.LanguageId = model.LanguageId;
                 employee.DepartmentId = model.DepartmentId;
-                //employee.Position = model.Position;
+                employee.PositionId = model.PositionId;
 
                 _employeeRepository.Update(employee);
             }
@@ -198,27 +301,28 @@ namespace GB_Corporation.Services
             {
                 var employee = new Employee()
                 {
-                    NameRu = applicant.NameRu,
-                    SurnameRu = applicant.SurnameRu,
-                    PatronymicRu = applicant.PatronymicRu,
-                    NameEn = applicant.NameEn,
-                    SurnameEn = applicant.SurnameEn,
+                    NameRu = model.NameRu,
+                    SurnameRu = model.SurnameRu,
+                    PatronymicRu = model.PatronymicRu,
+                    NameEn = model.NameEn,
+                    SurnameEn = model.SurnameEn,
                     Login = applicant.Login,
-                    Phone = applicant.Phone,
+                    Phone = model.Phone,
                     LanguageId = model.LanguageId,
                     DepartmentId = model.DepartmentId,
-                    StatusId = employeeActiveStatusId
-                    //Position = model.Position
+                    StatusId = employeeActiveStatusId,
+                    PositionId = model.PositionId,
                 };
 
                 _employeeRepository.Create(employee);
             }
 
-            var hiringData = _hiringDataRepository.GetById(model.Id);
+            applicant.StatusId = _superDictionaryRepository.GetResultSpec(x =>
+               x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus && p.Name == nameof(ApplicantStatusEnum.Hired))).First().Id;
 
             hiringData.StatusId = _superDictionaryRepository.GetResultSpec(x =>
                 x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus && p.Name == nameof(HiringStatusEnum.Closed))).First().Id;
-            
+
             _hiringDataRepository.Update(hiringData);
             _applicantReporitory.Update(applicant);
         }

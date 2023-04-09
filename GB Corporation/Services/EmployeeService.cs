@@ -13,14 +13,11 @@ namespace GB_Corporation.Services
     {
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<TestCompetencies> _testCompetenciesReporitory;
-        private readonly IRepository<Role> _roleReporitory;
 
-        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<TestCompetencies> testCompetenciesReporitory,
-            IRepository<Role> roleReporitory)
+        public EmployeeService(IRepository<Employee> employeeRepository, IRepository<TestCompetencies> testCompetenciesReporitory)
         {
             _employeeRepository = employeeRepository;
             _testCompetenciesReporitory = testCompetenciesReporitory;
-            _roleReporitory = roleReporitory;
         }
 
         public bool IsExists(int id) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Id == id));
@@ -32,22 +29,6 @@ namespace GB_Corporation.Services
                     .Include(x => x.Department)
                     .Include(x => x.Language)
                     .OrderBy(x => x.NameEn));
-        }
-
-        public List<ShortDTO> ListLMShort()
-        {
-            var roleId = _roleReporitory.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.LineManager))).First().Id;
-            
-            return AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == roleId))
-                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
-        }
-
-        public List<ShortDTO> ListTLShort()
-        {
-            var roleId = _roleReporitory.GetResultSpec(x => x.Where(p => p.Title == nameof(RoleEnum.TeamLeader))).First().Id;
-            
-            return AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x.Where(p => p.RoleId == roleId))
-                    .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
         }
 
         public void Delete(int id)

@@ -46,7 +46,7 @@ namespace GB_Corporation.Controllers
                 return BadRequest(new { messae = "Invalid Credentials" });
             }
             
-            var jwt = _jwtService.Generate(user, user.RoleId);
+            var jwt = _jwtService.Generate(user, user.RoleId.Value);
 
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {

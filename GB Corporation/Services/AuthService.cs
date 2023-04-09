@@ -40,6 +40,7 @@ namespace GB_Corporation.Services
                 LanguageId = register.LanguageId,
                 DepartmentId = register.DepartmentId,
                 RoleId = register.RoleId,
+                PositionId = register.PositionId,
                 StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus && p.Name == nameof(EmployeeStatusEnum.Active))).First().Id,
             };
 
@@ -56,7 +57,7 @@ namespace GB_Corporation.Services
             {
                 Id = id,
                 Name = emoployee.NameEn + " " + emoployee.SurnameEn,
-                Role = _roleRepository.GetById(emoployee.RoleId).Title,
+                Role = _roleRepository.GetById(emoployee.RoleId.Value).Title,
                 Token = jwt
             };
            
