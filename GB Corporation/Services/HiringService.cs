@@ -127,11 +127,6 @@ namespace GB_Corporation.Services
             return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x.Where(p => (p.Title != nameof(RoleEnum.Accountant)) && (p.Title != nameof(RoleEnum.Developer)))));
         }
 
-        public List<ShortDTO> GetPositions()
-        {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Position)));
-        }
-
         public bool IsExistsActiveData(int applicantId)
         {
             var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus &&
@@ -143,26 +138,26 @@ namespace GB_Corporation.Services
         public bool IsExistsInterviewData(int id) => _hiringInterviewerRepository.GetResultSpec(x => x.Any(p => p.Id == id));
         public bool CheckCreateData(HiringCreateDTO model)
         {
-            bool foreignLanguage = false;
-            bool logic = false;
-            bool programming = false;
+            bool foreignLanguage = true;
+            bool logic = true;
+            bool programming = true;
 
             if (model.ForeignLanguageTestId.HasValue)
             {
-                if (_foreignLanguageTestRepository.GetResultSpec(x => x.Any(p => (int)model.ForeignLanguageTestId == p.Id)))
-                    foreignLanguage = true;
+                if (!_foreignLanguageTestRepository.GetResultSpec(x => x.Any(p => (int)model.ForeignLanguageTestId == p.Id)))
+                    foreignLanguage = false;
             }
 
             if (model.LogicTestId.HasValue)
             {
-                if (_logicTestRepository.GetResultSpec(x => x.Any(p => (int)model.LogicTestId == p.Id)))
-                    logic = true;
+                if (!_logicTestRepository.GetResultSpec(x => x.Any(p => (int)model.LogicTestId == p.Id)))
+                    logic = false;
             }
 
             if (model.ProgrammingTestId.HasValue)
             {
-                if (_programmingTestRepository.GetResultSpec(x => x.Any(p => (int)model.ProgrammingTestId == p.Id)))
-                    programming = true;
+                if (!_programmingTestRepository.GetResultSpec(x => x.Any(p => (int)model.ProgrammingTestId == p.Id)))
+                    programming = false;
             }
 
             var employees = _employeeRepository.GetListResultSpec(x => x).Select(x => x.Id);

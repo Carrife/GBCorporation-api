@@ -39,5 +39,10 @@ namespace GB_Corporation.Services
         {
             return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ForeignLanguage)));
         }
+
+        public List<ShortDTO> GetPositions()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Position)));
+        }
     }
 }

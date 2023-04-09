@@ -46,13 +46,6 @@ namespace GB_Corporation.Controllers
             return Ok(_hiringService.GetInterviewerPositions());
         }
 
-        [Authorize(Roles = "Admin, HR")]
-        [HttpGet("GetPositions")]
-        public IActionResult GetPositions()
-        {
-            return Ok(_hiringService.GetPositions());
-        }
-
         [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)

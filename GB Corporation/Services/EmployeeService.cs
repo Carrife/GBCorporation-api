@@ -102,7 +102,12 @@ namespace GB_Corporation.Services
 
         public EmployeeGetDTO GetById(int id)
         {
-           return AutoMapperExpression.AutoMapEmployeeGetDTO(_employeeRepository.GetById(id));
+           return AutoMapperExpression.AutoMapEmployeeGetDTO(_employeeRepository.GetResultSpec(x => x.Where(p => p.Id == id)
+           .Include(x => x.Status)
+           .Include(x => x.Position)
+           .Include(x => x.Department)
+           .Include(x => x.Language))
+           .First());
         }
     }
 }

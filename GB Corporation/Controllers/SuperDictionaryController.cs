@@ -35,5 +35,12 @@ namespace GB_Corporation.Controllers
         {
             return Ok(_superDictionaryService.GetForeignLanguages());
         }
+
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [HttpGet("GetPositions")]
+        public IActionResult GetPositions()
+        {
+            return Ok(_superDictionaryService.GetPositions());
+        }
     }
 }

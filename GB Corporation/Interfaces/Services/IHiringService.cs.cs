@@ -8,7 +8,6 @@ namespace GB_Corporation.Interfaces.Services
         InterviewersDTO GetInterviewers();
         HiringTestDTO ListTestShort(int id);
         List<ShortDTO> GetInterviewerPositions();
-        List<ShortDTO> GetPositions();
         void Create(HiringCreateDTO data);
         HiringDTO GetById(int id);
         HiringAcceptDTO GetApplicantHiringData(int id);

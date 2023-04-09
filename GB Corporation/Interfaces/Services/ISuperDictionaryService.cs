@@ -7,5 +7,6 @@ namespace GB_Corporation.Interfaces.Services
         List<ShortDTO> GetProgrammingLanguages();
         List<ShortDTO> GetDepartments();
         List<ShortDTO> GetForeignLanguages();
+        List<ShortDTO> GetPositions();
     }
 }

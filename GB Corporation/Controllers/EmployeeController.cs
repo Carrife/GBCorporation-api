@@ -37,7 +37,7 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("Create")]
+        [HttpPost("Create")]
         public IActionResult Create(EmployeeCreateDTO model)
         {
             if (model == null)
@@ -52,13 +52,13 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("Fired")]
-        public IActionResult Fired([FromHeader]int id)
+        [HttpPut("Fired")]
+        public IActionResult Fired([Required][FromHeader]int id)
         {
             if (id < 1)
                 return BadRequest();
 
-            if (_employeeService.IsExists(id))
+            if (!_employeeService.IsExists(id))
                 return NotFound();
 
             _employeeService.Fired(id);
