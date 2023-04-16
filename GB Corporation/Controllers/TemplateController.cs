@@ -1,4 +1,5 @@
 ﻿using GB_Corporation.DTOs;
+using GB_Corporation.Enums;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,21 +29,9 @@ namespace GB_Corporation.Controllers
         public IActionResult Create(TemplateCreateDTO model)
         {
             if(model == null || _templateService.IsExists(model.Name))
-                return BadRequest();
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
 
             _templateService.Create(model);
-
-            return Ok();
-        }
-
-        [Authorize(Roles = "Admin, HR")]
-        [HttpPut("Update")]
-        public IActionResult Update(TemplateDTO model)
-        {
-            if (model == null || !_templateService.IsExists(model.Id) || _templateService.IsExists(model.Name))
-                return BadRequest();
-
-            _templateService.Update(model);
 
             return Ok();
         }

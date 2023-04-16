@@ -97,23 +97,14 @@ namespace GB_Corporation.Helpers
         public static List<TemplateDTO> AutoMapTemplateDTO(IQueryable<Template> entities)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Template, TemplateDTO>();
+                cfg.CreateMap<Template, TemplateDTO>()
+                    .ForMember(dist => dist.LastUpdate, opt => opt.MapFrom(x => x.LastUpdate.GetValueOrDefault().ToString("yyyy-MM-dd")));
+
             });
 
             var mapper = new Mapper(config);
 
             return mapper.Map<List<TemplateDTO>>(entities);
-        }
-
-        public static Template AutoMapTemplate(TemplateDTO entities)
-        {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TemplateDTO, Template>();
-            });
-
-            var mapper = new Mapper(config);
-
-            return mapper.Map<Template>(entities);
         }
 
         public static Template AutoMapTemplate(TemplateCreateDTO entities)

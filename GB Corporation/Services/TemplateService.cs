@@ -20,7 +20,7 @@ namespace GB_Corporation.Services
 
         public List<TemplateDTO> GetAll()
         {
-            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x));
+            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x).OrderBy(x => x.Name));
         }
 
         public void Create(TemplateCreateDTO model)
@@ -28,18 +28,6 @@ namespace GB_Corporation.Services
             var template = AutoMapperExpression.AutoMapTemplate(model);
 
             _templateRepository.Create(template);
-        }
-
-        public void Update(TemplateDTO model)
-        {
-            var template = _templateRepository.GetById(model.Id);
-
-            if(template != null)
-            {
-                template.Name = model.Name;
-                
-                _templateRepository.Update(template);
-            }  
         }
 
         public void Delete(int id)
@@ -78,7 +66,7 @@ namespace GB_Corporation.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            template.LastUpdate = DateTime.Now;
+            template.LastUpdate = DateTime.Now.ToUniversalTime();
             template.Link = path;
 
             _templateRepository.Update(template);
@@ -94,13 +82,13 @@ namespace GB_Corporation.Services
 
         public string GetFilePath(int templateId)
         {
-            string path = _templateRepository.GetById(templateId).Link;
+            var path = _templateRepository.GetById(templateId).Link;
             return Path.Combine(_appEnvironment.ContentRootPath, path);
         }
 
         public string GetFileName(int templateId)
         {
-            string path = _templateRepository.GetById(templateId).Link;
+            var path = _templateRepository.GetById(templateId).Link;
             string name = path.Split("/").ToList().Last();
             return name;
         }
