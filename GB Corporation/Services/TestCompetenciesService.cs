@@ -1,4 +1,5 @@
 ﻿using GB_Corporation.DTOs;
+using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
@@ -10,10 +11,26 @@ namespace GB_Corporation.Services
     {
         private readonly IRepository<TestCompetencies> _testCompetenciesReporitory;
         private readonly IRepository<Employee> _employeeReporitory;
-        public TestCompetenciesService(IRepository<TestCompetencies> testCompetenciesReporitory, IRepository<Employee> employeeReporitory)
+        private readonly IRepository<Template> _templateRepository;
+
+        public TestCompetenciesService(IRepository<TestCompetencies> testCompetenciesReporitory, IRepository<Employee> employeeReporitory,
+            IRepository<Template> templateRepository)
         {
             _testCompetenciesReporitory = testCompetenciesReporitory;
             _employeeReporitory = employeeReporitory;
+            _templateRepository = templateRepository;
+        }
+
+        public List<TemplateDTO> GetAll()
+        {
+            return AutoMapperExpression.AutoMapTemplateDTO(_templateRepository.GetListResultSpec(x => x.Where(p => p.Link != null)).OrderBy(x => x.Name));
+        }
+
+        public List<TestCompetenciesDTO> GetUserTests(int id)
+        {
+            return AutoMapperExpression.AutoMapTestCompetenciesDTO(_testCompetenciesReporitory.GetListResultSpec(x => 
+                x.Where(p => p.EmployeeId == id))
+                .OrderBy(x => x.Title).ThenBy(x => x.Date));
         }
 
         public List<CompetenciesTestDTO> GetTestData(string docPath)
@@ -68,15 +85,13 @@ namespace GB_Corporation.Services
 
         public void Complete(TestCompleteDTO model)
         {
-            int employeeId = _employeeReporitory.GetListResultSpec(x => x.Where(p => p.NameEn+" "+p.SurnameEn == model.User)).First().Id;
-
             var competence = new TestCompetencies
             {
                 Title = model.Title,
                 TestResult = model.Result,
-                EmployeeId = employeeId,
-                Date = DateTime.Now
-            };
+                EmployeeId = model.UserId,
+                Date = DateTime.Now.ToUniversalTime()
+        };
 
             _testCompetenciesReporitory.Create(competence);
         }

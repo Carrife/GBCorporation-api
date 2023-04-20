@@ -6,5 +6,7 @@ namespace GB_Corporation.Interfaces.Services
     {
         List<CompetenciesTestDTO> GetTestData(string docPath);
         void Complete(TestCompleteDTO model);
+        List<TemplateDTO> GetAll();
+        List<TestCompetenciesDTO> GetUserTests(int id);
     }
 }

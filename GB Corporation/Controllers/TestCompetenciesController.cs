@@ -12,10 +12,20 @@ namespace GB_Corporation.Controllers
     {
         private readonly ITestCompetenciesService _testCompetenciesService;
         private readonly ITemplateService _templateService;
-        public TestCompetenciesController(ITestCompetenciesService testCompetenciesService, ITemplateService templateService)
+        private readonly IEmployeeService _employeeService;
+        public TestCompetenciesController(ITestCompetenciesService testCompetenciesService, ITemplateService templateService,
+            IEmployeeService employeeService)
         {
             _testCompetenciesService = testCompetenciesService;
             _templateService = templateService;
+            _employeeService = employeeService;
+        }
+
+        [Authorize(Roles = "Admin, Developer, TeamLeader")]
+        [HttpGet("GetAll")]
+        public IActionResult GetAll()
+        {
+            return Ok(_testCompetenciesService.GetAll());
         }
 
         [Authorize(Roles = "TeamLeader, Developer, Admin")]
@@ -39,9 +49,24 @@ namespace GB_Corporation.Controllers
             if(model == null)
                 return BadRequest();
 
+            if (!_employeeService.IsExists(model.UserId))
+                return NotFound();
+
             _testCompetenciesService.Complete(model);
 
             return Ok();
+        }
+
+        [Authorize(Roles = "HR, TeamLeader, Developer, Admin")]
+        [HttpGet("GetByUserId")]
+        public IActionResult GetByUserId([Required][FromHeader] int id)
+        {
+            if (!_employeeService.IsExists(id))
+                return NotFound();
+
+            var testData = _testCompetenciesService.GetUserTests(id);
+
+            return Ok(testData);
         }
     }
 }

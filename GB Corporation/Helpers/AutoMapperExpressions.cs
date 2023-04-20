@@ -99,7 +99,6 @@ namespace GB_Corporation.Helpers
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<Template, TemplateDTO>()
                     .ForMember(dist => dist.LastUpdate, opt => opt.MapFrom(x => x.LastUpdate.GetValueOrDefault().ToString("yyyy-MM-dd")));
-
             });
 
             var mapper = new Mapper(config);
@@ -122,7 +121,8 @@ namespace GB_Corporation.Helpers
         public static List<TestCompetenciesDTO> AutoMapTestCompetenciesDTO(IQueryable<TestCompetencies> entities)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TestCompetencies, TestCompetenciesDTO>();
+                cfg.CreateMap<TestCompetencies, TestCompetenciesDTO>()
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")));
             });
 
             var mapper = new Mapper(config);
