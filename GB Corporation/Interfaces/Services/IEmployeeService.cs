@@ -11,5 +11,7 @@ namespace GB_Corporation.Interfaces.Services
         void Fired(int id);
         void Update(EmployeeUpdateDTO model);
         EmployeeGetDTO GetById(int id);
+        List<UserDTO> ListAllUsers();
+        void UpdateUser(UserUpdateDTO model);
     }
 }

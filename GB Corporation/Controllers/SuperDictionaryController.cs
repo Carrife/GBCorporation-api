@@ -1,4 +1,6 @@
-﻿using GB_Corporation.Interfaces.Services;
+﻿using GB_Corporation.DTOs;
+using GB_Corporation.Enums;
+using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,11 +24,89 @@ namespace GB_Corporation.Controllers
             return Ok(_superDictionaryService.GetProgrammingLanguages());
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost("CreateProgrammingLanguage")]
+        public IActionResult CreateProgrammingLanguage([FromBody] ShortDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (_superDictionaryService.IsProgrammingLanguageExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
+
+            _superDictionaryService.CreateProgrammingLanguage(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("DeleteProgrammingLanguage")]
+        public IActionResult DeleteProgrammingLanguage([FromHeader] int id)
+        {
+            if (!_superDictionaryService.IsExists(id))
+                return BadRequest();
+
+            _superDictionaryService.DeleteProgrammingLanguage(id);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateProgrammingLanguage")]
+        public IActionResult UpdateProgrammingLanguage(ShortDTO model)
+        {
+            if (model == null || !_superDictionaryService.IsExists(model.Id))
+                return BadRequest();
+
+            _superDictionaryService.UpdateProgrammingLanguage(model);
+
+            return Ok();
+        }
+
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpGet("GetDepartments")]
         public IActionResult GetDepartments()
         {
             return Ok(_superDictionaryService.GetDepartments());
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("CreateDepartment")]
+        public IActionResult CreateDepartment([FromBody] ShortDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (_superDictionaryService.IsDepartmentExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
+
+            _superDictionaryService.CreateDepartment(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("DeleteDepartment")]
+        public IActionResult DeleteDepartment([FromHeader] int id)
+        {
+            if (!_superDictionaryService.IsExists(id))
+                return BadRequest();
+
+            _superDictionaryService.DeleteDepartment(id);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateDepartment")]
+        public IActionResult UpdateDepartment(ShortDTO model)
+        {
+            if (model == null || !_superDictionaryService.IsExists(model.Id))
+                return BadRequest();
+
+            _superDictionaryService.UpdateDepartment(model);
+
+            return Ok();
         }
 
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
@@ -36,11 +116,89 @@ namespace GB_Corporation.Controllers
             return Ok(_superDictionaryService.GetForeignLanguages());
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost("CreateForeignLanguage")]
+        public IActionResult CreateForeignLanguage([FromBody] ShortDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (_superDictionaryService.IsForeignLanguageExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
+
+            _superDictionaryService.CreateForeignLanguage(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("DeleteForeignLanguage")]
+        public IActionResult DeleteForeignLanguage([FromHeader] int id)
+        {
+            if (!_superDictionaryService.IsExists(id))
+                return BadRequest();
+
+            _superDictionaryService.DeleteForeignLanguage(id);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateForeignLanguage")]
+        public IActionResult UpdateForeignLanguage(ShortDTO model)
+        {
+            if (model == null || !_superDictionaryService.IsExists(model.Id))
+                return BadRequest();
+
+            _superDictionaryService.UpdateForeignLanguage(model);
+
+            return Ok();
+        }
+
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
         [HttpGet("GetPositions")]
         public IActionResult GetPositions()
         {
             return Ok(_superDictionaryService.GetPositions());
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("CreatePosition")]
+        public IActionResult CreatePosition([FromBody] ShortDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (_superDictionaryService.IsPositionExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
+
+            _superDictionaryService.CreatePosition(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("DeletePosition")]
+        public IActionResult DeletePosition([FromHeader] int id)
+        {
+            if (!_superDictionaryService.IsExists(id))
+                return BadRequest();
+
+            _superDictionaryService.DeletePosition(id);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdatePosition")]
+        public IActionResult UpdatePosition(ShortDTO model)
+        {
+            if (model == null || !_superDictionaryService.IsExists(model.Id))
+                return BadRequest();
+
+            _superDictionaryService.UpdatePosition(model);
+
+            return Ok();
         }
     }
 }

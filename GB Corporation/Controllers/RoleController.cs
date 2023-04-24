@@ -1,6 +1,5 @@
 ﻿using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GB_Corporation.Controllers
@@ -15,7 +14,7 @@ namespace GB_Corporation.Controllers
             _roleService = roleService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetRoles")]
         public IActionResult GetRoles()
         {

@@ -24,6 +24,13 @@ namespace GB_Corporation.Controllers
             return Ok(_employeeService.ListAll());
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetAllUsers")]
+        public IActionResult GetAllUsers()
+        {
+            return Ok(_employeeService.ListAllUsers());
+        }
+
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
@@ -77,6 +84,21 @@ namespace GB_Corporation.Controllers
                 return NotFound();
 
             _employeeService.Update(model);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateUser")]
+        public IActionResult UpdateUser(UserUpdateDTO model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            if (!_employeeService.IsExists(model.Id))
+                return NotFound();
+
+            _employeeService.UpdateUser(model);
 
             return Ok();
         }

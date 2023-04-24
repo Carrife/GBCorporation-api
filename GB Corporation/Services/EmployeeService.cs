@@ -35,6 +35,14 @@ namespace GB_Corporation.Services
                 .OrderBy(x => x.NameEn));
         }
 
+        public List<UserDTO> ListAllUsers()
+        {
+            return AutoMapperExpression.AutoMapUserDTO(_employeeRepository.GetListResultSpec(x => x
+                .Where(p => p.Status.Name == nameof(EmployeeStatusEnum.Active) && p.Status.DictionaryId == (int)DictionaryEnum.EmployeeStatus))
+                .Include(x => x.Role)
+                .OrderBy(x => x.NameEn));
+        }
+
         public void Create(EmployeeCreateDTO model)
         {
             var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus &&
@@ -108,6 +116,20 @@ namespace GB_Corporation.Services
            .Include(x => x.Department)
            .Include(x => x.Language))
            .First());
+        }
+
+        public void UpdateUser(UserUpdateDTO model)
+        {
+            var user = _employeeRepository.GetById(model.Id);
+
+            user.RoleId = model.Role;
+            user.Email = model.Email;
+            if(model.Password != null)
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            }
+            
+            _employeeRepository.Update(user);
         }
     }
 }

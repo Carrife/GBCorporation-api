@@ -93,6 +93,23 @@ namespace GB_Corporation.Helpers
             return mapper.Map<EmployeeGetDTO>(entity);
         }
 
+        public static List<UserDTO> AutoMapUserDTO(IQueryable<Employee> entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Employee, UserDTO>()
+                    .ForMember(dist => dist.NameRu, opt => opt.MapFrom(x => $"{x.SurnameRu} {x.NameRu} {x.PatronymicRu}"))
+                    .ForMember(dist => dist.NameEn, opt => opt.MapFrom(x => $"{x.NameEn} {x.SurnameEn}"))
+                    .ForMember(dist => dist.Email, opt => opt.MapFrom(x => x.Email))
+                    .ForMember(dist => dist.Login, opt => opt.MapFrom(x => x.Login))
+                    .ForMember(dist => dist.Role, opt => opt.MapFrom(x => x.Role));
+                cfg.CreateMap<Role, ShortDTO>()
+                    .ForMember(dist => dist.Name, opt => opt.MapFrom(x => x.Title));
+            });
+
+            var mapper = new Mapper(config);
+            return mapper.Map<List<UserDTO>>(entities);
+        }
+
         //Template
         public static List<TemplateDTO> AutoMapTemplateDTO(IQueryable<Template> entities)
         {
