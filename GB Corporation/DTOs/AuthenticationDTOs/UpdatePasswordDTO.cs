@@ -2,7 +2,7 @@
 {
     public class UpdatePasswordDTO
     {
-        public string Login { get; set; }
+        public int UserId { get; set; }
         public string Password { get; set; }
         public string NewPassword { get; set; }
         public string NewPasswordConfirm { get; set; }

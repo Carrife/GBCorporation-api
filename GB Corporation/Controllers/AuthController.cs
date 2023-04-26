@@ -38,12 +38,12 @@ namespace GB_Corporation.Controllers
 
             if(user == null)
             {
-                return BadRequest(new {messae = "Invalid Credentials"});
+                return BadRequest();
             }
 
             if (!BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
-                return BadRequest(new { messae = "Invalid Credentials" });
+                return BadRequest();
             }
             
             var jwt = _jwtService.Generate(user, user.RoleId.Value);
@@ -53,10 +53,7 @@ namespace GB_Corporation.Controllers
                 HttpOnly = true
             });
 
-            return Ok(new
-            {
-                message = "success"
-            });
+            return Ok();
         }
 
         [HttpGet("user")]
@@ -88,15 +85,19 @@ namespace GB_Corporation.Controllers
                 message = "success"
             });
         }
-
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        
+        
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, Accountant, ChiefAccountant, CEO, BA")]
         [HttpPost("UpdatePassword")]
         public IActionResult UpdatePassword([FromBody] UpdatePasswordDTO model)
         {
-            if (model == null || _authService.IsExists(model))
+            if (model == null || !_authService.IsExists(model))
                 return BadRequest();
 
-            if(model.NewPassword != model.NewPasswordConfirm)
+            if (model.NewPassword != model.NewPasswordConfirm)
+                return BadRequest();
+
+            if(!BCrypt.Net.BCrypt.Verify(model.Password, _authService.GetPasswordById(model.UserId)))
                 return BadRequest();
 
             _authService.UpdatePassword(model);

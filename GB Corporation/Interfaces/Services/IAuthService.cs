@@ -9,6 +9,7 @@ namespace GB_Corporation.Interfaces.Services
         bool IsExists(UpdatePasswordDTO model);
         void Register(RegisterDTO register);
         Employee GetUserByEmail(string email);
+        string? GetPasswordById(int userId);
         EmployeeGetUserDTO GetUserById(int id, string? jwt);
         void UpdatePassword(UpdatePasswordDTO updatePassword);
     }

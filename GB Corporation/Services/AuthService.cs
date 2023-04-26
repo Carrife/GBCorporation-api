@@ -21,7 +21,7 @@ namespace GB_Corporation.Services
         
         public bool IsExists(RegisterDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == model.Login || p.Email == model.Email));
 
-        public bool IsExists(UpdatePasswordDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == model.Login));
+        public bool IsExists(UpdatePasswordDTO model) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Id == model.UserId));
 
         public void Register(RegisterDTO register)
         {
@@ -47,6 +47,7 @@ namespace GB_Corporation.Services
         }
 
         public Employee GetUserByEmail(string email) => _employeeRepository.GetResultSpec(x => x.Where(p => p.Email == email)).FirstOrDefault();
+        public string? GetPasswordById(int userId) => _employeeRepository.GetResultSpec(x => x.Where(p => p.Id == userId)).FirstOrDefault()?.Password;
 
         public EmployeeGetUserDTO GetUserById(int id, string? jwt)
         {
@@ -65,7 +66,7 @@ namespace GB_Corporation.Services
 
         public void UpdatePassword(UpdatePasswordDTO updatePassword)
         {
-            var user = _employeeRepository.GetListResultSpec(x => x.Where(p => p.Login == updatePassword.Login)).First();
+            var user = _employeeRepository.GetListResultSpec(x => x.Where(p => p.Id == updatePassword.UserId)).First();
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(updatePassword.NewPassword);
 
