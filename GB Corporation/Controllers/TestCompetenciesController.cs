@@ -32,8 +32,8 @@ namespace GB_Corporation.Controllers
         [HttpGet("Start")]
         public IActionResult Start([Required][FromHeader] int id)
         {
-            if (!_templateService.IsExists(id))
-                return NotFound();
+            if (id < 1 || !_templateService.IsDocExists(id))
+                return BadRequest();
 
             string docPath = _templateService.GetFilePath(id);
 

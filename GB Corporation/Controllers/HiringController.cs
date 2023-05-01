@@ -54,7 +54,7 @@ namespace GB_Corporation.Controllers
         [HttpGet("GetById")]
         public IActionResult GetById([Required][FromHeader] int id)
         {
-            if (!_hiringService.IsExistsData(id))
+            if (id < 1 || !_hiringService.IsExistsData(id))
                 return BadRequest();
 
             var data = _hiringService.GetById(id);
@@ -84,7 +84,7 @@ namespace GB_Corporation.Controllers
         [HttpPut("UpdateDescription")]
         public IActionResult UpdateDescription([Required][FromHeader] int id, [Required][FromHeader] string description)
         {
-            if (!_hiringService.IsExistsInterviewData(id))
+            if (id < 1 || !_hiringService.IsExistsInterviewData(id))
                 return BadRequest();
 
             _hiringService.UpdateDescription(id, description);
@@ -96,7 +96,7 @@ namespace GB_Corporation.Controllers
         [HttpGet("GetApplicantHiringData")]
         public IActionResult GetApplicantHiringData([Required][FromHeader] int id)
         {
-            if (!_hiringService.IsExistsData(id))
+            if (id < 1 || !_hiringService.IsExistsData(id))
                 return BadRequest();
 
             var data = _hiringService.GetApplicantHiringData(id);
@@ -108,7 +108,7 @@ namespace GB_Corporation.Controllers
         [HttpPut("Reject")]
         public IActionResult Reject([Required][FromHeader] int id)
         {
-            if (!_hiringService.IsExistsData(id))
+            if (id < 1 || !_hiringService.IsExistsData(id))
                 return BadRequest();
 
             _hiringService.Reject(id);
@@ -120,7 +120,7 @@ namespace GB_Corporation.Controllers
         [HttpPut("Hire")]
         public IActionResult Hire([FromBody] HiringAcceptDTO model)
         { 
-            if (!_hiringService.IsExistsData(model.Id))
+            if (model.Id < 1 ||  !_hiringService.IsExistsData(model.Id))
                 return BadRequest();
 
             _hiringService.Hire(model);

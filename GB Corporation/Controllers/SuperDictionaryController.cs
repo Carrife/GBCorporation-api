@@ -43,7 +43,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("DeleteProgrammingLanguage")]
         public IActionResult DeleteProgrammingLanguage([FromHeader] int id)
         {
-            if (!_superDictionaryService.IsExists(id))
+            if (id < 1 || !_superDictionaryService.IsExists(id))
                 return BadRequest();
 
             _superDictionaryService.DeleteProgrammingLanguage(id);
@@ -57,6 +57,9 @@ namespace GB_Corporation.Controllers
         {
             if (model == null || !_superDictionaryService.IsExists(model.Id))
                 return BadRequest();
+
+            if (_superDictionaryService.IsProgrammingLanguageExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
 
             _superDictionaryService.UpdateProgrammingLanguage(model);
 
@@ -89,7 +92,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("DeleteDepartment")]
         public IActionResult DeleteDepartment([FromHeader] int id)
         {
-            if (!_superDictionaryService.IsExists(id))
+            if (id < 1 || !_superDictionaryService.IsExists(id))
                 return BadRequest();
 
             _superDictionaryService.DeleteDepartment(id);
@@ -103,6 +106,9 @@ namespace GB_Corporation.Controllers
         {
             if (model == null || !_superDictionaryService.IsExists(model.Id))
                 return BadRequest();
+
+            if (_superDictionaryService.IsDepartmentExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
 
             _superDictionaryService.UpdateDepartment(model);
 
@@ -135,7 +141,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("DeleteForeignLanguage")]
         public IActionResult DeleteForeignLanguage([FromHeader] int id)
         {
-            if (!_superDictionaryService.IsExists(id))
+            if (id < 1 || !_superDictionaryService.IsExists(id))
                 return BadRequest();
 
             _superDictionaryService.DeleteForeignLanguage(id);
@@ -149,6 +155,9 @@ namespace GB_Corporation.Controllers
         {
             if (model == null || !_superDictionaryService.IsExists(model.Id))
                 return BadRequest();
+
+            if (_superDictionaryService.IsForeignLanguageExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
 
             _superDictionaryService.UpdateForeignLanguage(model);
 
@@ -181,7 +190,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("DeletePosition")]
         public IActionResult DeletePosition([FromHeader] int id)
         {
-            if (!_superDictionaryService.IsExists(id))
+            if (id < 1 || !_superDictionaryService.IsExists(id))
                 return BadRequest();
 
             _superDictionaryService.DeletePosition(id);
@@ -195,6 +204,9 @@ namespace GB_Corporation.Controllers
         {
             if (model == null || !_superDictionaryService.IsExists(model.Id))
                 return BadRequest();
+
+            if (_superDictionaryService.IsPositionExists(model.Name))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.SameDataExists));
 
             _superDictionaryService.UpdatePosition(model);
 

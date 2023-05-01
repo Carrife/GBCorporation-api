@@ -74,6 +74,11 @@ namespace GB_Corporation.Services
 
         public bool IsDocExists(int templateId)
         {
+            var isIdExist = _templateRepository.GetResultSpec(x => x.Any(p => p.Id == templateId));
+            
+            if(!isIdExist)
+                return false;
+
             if (_templateRepository.GetById(templateId).Link != null)
                 return true;
             else

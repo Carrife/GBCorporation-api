@@ -40,7 +40,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("Delete")]
         public IActionResult Delete([FromHeader]int id)
         {
-            if (!_templateService.IsExists(id))
+            if (id < 1 || !_templateService.IsExists(id))
                 return BadRequest();
 
             _templateService.Delete(id);
@@ -52,11 +52,8 @@ namespace GB_Corporation.Controllers
         [HttpPost("Upload")]
         public IActionResult UploadFile([Required][FromHeader] int id, IFormFile file)
         {
-            if (file == null || id < 1)
+            if (file == null || id < 1 || !_templateService.IsExists(id))
                 return BadRequest();
-
-            if(!_templateService.IsExists(id))
-                return NotFound();
 
             _templateService.Upload(file, id);
 
@@ -67,8 +64,8 @@ namespace GB_Corporation.Controllers
         [HttpGet("Download")]
         public IActionResult DownloadFile([Required][FromHeader] int id)
         {
-            if (!_templateService.IsDocExists(id))
-                return NotFound();
+            if (id < 1 || !_templateService.IsDocExists(id))
+                return BadRequest();
 
             string path = _templateService.GetFilePath(id);
             FileStream fs = new(path, FileMode.Open);

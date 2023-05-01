@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace GB_Corporation.DTOs
+﻿namespace GB_Corporation.DTOs
 {
     public class LoginDTO
     {

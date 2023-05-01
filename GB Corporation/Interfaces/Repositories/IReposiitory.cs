@@ -1,5 +1,4 @@
 ﻿using GB_Corporation.Models;
-using System.Linq.Expressions;
 
 namespace GB_Corporation.Interfaces.Repositories
 {

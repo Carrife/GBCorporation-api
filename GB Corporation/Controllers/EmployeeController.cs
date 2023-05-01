@@ -71,11 +71,8 @@ namespace GB_Corporation.Controllers
         [HttpPut("Fired")]
         public IActionResult Fired([Required][FromHeader]int id)
         {
-            if (id < 1)
+            if (id < 1 || !_employeeService.IsExists(id))
                 return BadRequest();
-
-            if (!_employeeService.IsExists(id))
-                return NotFound();
 
             _employeeService.Fired(id);
 
@@ -86,11 +83,8 @@ namespace GB_Corporation.Controllers
         [HttpPut("Update")]
         public IActionResult Update(EmployeeUpdateDTO model)
         {
-            if (model == null)
+            if (model == null || !_employeeService.IsExists(model.Id))
                 return BadRequest();
-
-            if (!_employeeService.IsExists(model.Id))
-                return NotFound();
 
             _employeeService.Update(model);
 
@@ -101,11 +95,8 @@ namespace GB_Corporation.Controllers
         [HttpPut("UpdateUser")]
         public IActionResult UpdateUser(UserUpdateDTO model)
         {
-            if (model == null)
+            if (model == null || !_employeeService.IsExists(model.Id))
                 return BadRequest();
-
-            if (!_employeeService.IsExists(model.Id))
-                return NotFound();
 
             _employeeService.UpdateUser(model);
 

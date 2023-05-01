@@ -21,5 +21,15 @@
         /// An existing record with the same data was already found.
         /// </summary>
         SameDataExists,
+
+        /// <summary>
+        /// Email is not valid
+        /// </summary>
+        InvalidEmail,
+
+        /// <summary>
+        /// Password is not valid
+        /// </summary>
+        InvalidPassword,
     }
 }

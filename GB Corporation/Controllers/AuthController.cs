@@ -1,4 +1,5 @@
 ﻿using GB_Corporation.DTOs;
+using GB_Corporation.Enums;
 using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -38,12 +39,12 @@ namespace GB_Corporation.Controllers
 
             if(user == null)
             {
-                return BadRequest();
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidEmail));
             }
 
             if (!BCrypt.Net.BCrypt.Verify(login.Password, user.Password))
             {
-                return BadRequest();
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidPassword));
             }
             
             var jwt = _jwtService.Generate(user, user.RoleId.Value);
@@ -95,10 +96,10 @@ namespace GB_Corporation.Controllers
                 return BadRequest();
 
             if (model.NewPassword != model.NewPasswordConfirm)
-                return BadRequest();
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidPassword));
 
-            if(!BCrypt.Net.BCrypt.Verify(model.Password, _authService.GetPasswordById(model.UserId)))
-                return BadRequest();
+            if (!BCrypt.Net.BCrypt.Verify(model.Password, _authService.GetPasswordById(model.UserId)))
+                return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidPassword));
 
             _authService.UpdatePassword(model);
 
