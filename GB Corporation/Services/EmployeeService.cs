@@ -5,6 +5,7 @@ using GB_Corporation.DTOs;
 using Microsoft.EntityFrameworkCore;
 using GB_Corporation.Models;
 using GB_Corporation.Enums;
+using System.Linq.Expressions;
 
 namespace GB_Corporation.Services
 {
@@ -26,21 +27,157 @@ namespace GB_Corporation.Services
         public bool IsExists(string login) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Login == login)) || 
             _applicantRepository.GetResultSpec(x => x.Any(p => p.Login == login));
 
-        public List<EmployeeDTO> ListAll()
+        public List<EmployeeDTO> ListAll(EmployeeFilterDTO filters)
         {
-            return AutoMapperExpression.AutoMapEmployeeDTO(_employeeRepository.GetListResultSpec(x => x)
+            var predicate = CreatePredicateEmployee(filters, out bool IsFilterActive);
+            
+            var totalElements = _employeeRepository.GetResultSpec(x => x.Where(predicate)).Count();
+
+            if (totalElements == 0)
+                return new List<EmployeeDTO>();
+
+            return AutoMapperExpression.AutoMapEmployeeDTO(_employeeRepository.GetListResultSpec(x => x.Where(predicate))
                 .Include(x => x.Position)
                 .Include(x => x.Department)
                 .Include(x => x.Status)
                 .OrderBy(x => x.NameEn));
         }
 
-        public List<UserDTO> ListAllUsers()
+        private Expression<Func<Employee, bool>> CreatePredicateEmployee(EmployeeFilterDTO filters, out bool IsFilterActive)
         {
+            var predicate = PredicateBuilder.True<Employee>();
+            IsFilterActive = false;
+
+            if (!string.IsNullOrEmpty(filters.NameRu))
+            {
+                predicate = predicate.And(p => p.NameRu.ToLower().Contains(filters.NameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameRu))
+            {
+                predicate = predicate.And(p => p.SurnameRu.ToLower().Contains(filters.SurnameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.PatronymicRu))
+            {
+                predicate = predicate.And(p => p.PatronymicRu.ToLower().Contains(filters.PatronymicRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.NameEn))
+            {
+                predicate = predicate.And(p => p.NameEn.ToLower().Contains(filters.NameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameEn))
+            {
+                predicate = predicate.And(p => p.SurnameEn.ToLower().Contains(filters.SurnameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.Login))
+            {
+                predicate = predicate.And(p => p.Login.ToLower() == filters.Login.ToLower());
+                IsFilterActive = true;
+            }
+
+            if (filters.DepartmentIds != null && filters.DepartmentIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.DepartmentIds.Contains(p.DepartmentId));
+                IsFilterActive = true;
+            }
+
+            if (filters.PositionIds != null && filters.PositionIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.PositionIds.Contains(p.PositionId));
+                IsFilterActive = true;
+            }
+
+            if (filters.StatusIds != null && filters.StatusIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.StatusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+            else
+            {
+                var statusIds = _superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.Name == nameof(EmployeeStatusEnum.Active)
+                    && p.DictionaryId == (int)DictionaryEnum.EmployeeStatus)).Select(x => x.Id).ToList();
+
+                predicate = predicate.And(p => statusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+
+            return predicate;
+        }
+
+        public List<UserDTO> ListAllUsers(UsersFilterDTO filters)
+        {
+            var predicate = CreatePredicateUser(filters, out bool IsFilterActive);
+
+            predicate = predicate.And(p => p.Status.Name == nameof(EmployeeStatusEnum.Active) && p.Status.DictionaryId == (int)DictionaryEnum.EmployeeStatus);
+
+            var totalElements = _employeeRepository.GetResultSpec(x => x.Where(predicate)).Count();
+
+            if (totalElements == 0)
+                return new List<UserDTO>();
+
             return AutoMapperExpression.AutoMapUserDTO(_employeeRepository.GetListResultSpec(x => x
-                .Where(p => p.Status.Name == nameof(EmployeeStatusEnum.Active) && p.Status.DictionaryId == (int)DictionaryEnum.EmployeeStatus))
+                .Where(predicate))
                 .Include(x => x.Role)
                 .OrderBy(x => x.NameEn));
+        }
+
+        private Expression<Func<Employee, bool>> CreatePredicateUser(UsersFilterDTO filters, out bool IsFilterActive)
+        {
+            var predicate = PredicateBuilder.True<Employee>();
+            IsFilterActive = false;
+
+            if (!string.IsNullOrEmpty(filters.NameRu))
+            {
+                predicate = predicate.And(p => p.NameRu.ToLower().Contains(filters.NameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameRu))
+            {
+                predicate = predicate.And(p => p.SurnameRu.ToLower().Contains(filters.SurnameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.PatronymicRu))
+            {
+                predicate = predicate.And(p => p.PatronymicRu.ToLower().Contains(filters.PatronymicRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.NameEn))
+            {
+                predicate = predicate.And(p => p.NameEn.ToLower().Contains(filters.NameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameEn))
+            {
+                predicate = predicate.And(p => p.SurnameEn.ToLower().Contains(filters.SurnameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.Login))
+            {
+                predicate = predicate.And(p => p.Login.ToLower().Contains(filters.Login.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (filters.RoleIds != null && filters.RoleIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.RoleIds.Contains(p.RoleId));
+                IsFilterActive = true;
+            }
+
+            return predicate;
         }
 
         public void Create(EmployeeCreateDTO model)

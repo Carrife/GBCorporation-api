@@ -23,7 +23,8 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetProgrammingLanguages()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ProgrammingLanguage)).OrderBy(x => x.Name));
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.ProgrammingLanguage)).OrderBy(x => x.Name));
         }
 
         public bool IsProgrammingLanguageExists(string name)
@@ -63,7 +64,8 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetDepartments()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Department)).OrderBy(x => x.Name));
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.Department)).OrderBy(x => x.Name));
         }
 
         public bool IsDepartmentExists(string name)
@@ -103,7 +105,8 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetForeignLanguages()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ForeignLanguage)).OrderBy(x => x.Name));
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.ForeignLanguage)).OrderBy(x => x.Name));
         }
 
         public bool IsForeignLanguageExists(string name)
@@ -143,7 +146,8 @@ namespace GB_Corporation.Services
 
         public List<ShortDTO> GetPositions()
         {
-            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.Position)).OrderBy(x => x.Name));
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.Position)).OrderBy(x => x.Name));
         }
 
         public bool IsPositionExists(string name)
@@ -179,6 +183,24 @@ namespace GB_Corporation.Services
 
                 _superDictionaryRepository.Update(data);
             }
+        }
+
+        public List<ShortDTO> GetEmployeeStatuses()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus)).OrderBy(x => x.Name));
+        }
+
+        public List<ShortDTO> GetApplicantStatuses()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus)).OrderBy(x => x.Name));
+        }
+
+        public List<ShortDTO> GetHiringStatuses()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus)).OrderBy(x => x.Name));
         }
     }
 }

@@ -6,12 +6,12 @@ namespace GB_Corporation.Interfaces.Services
     {
         bool IsExists (int id);
         bool IsExists(string login);
-        List<EmployeeDTO> ListAll();
+        List<EmployeeDTO> ListAll(EmployeeFilterDTO filters);
         void Create(EmployeeCreateDTO model);
         void Fired(int id);
         void Update(EmployeeUpdateDTO model);
         EmployeeGetDTO GetById(int id);
-        List<UserDTO> ListAllUsers();
+        List<UserDTO> ListAllUsers(UsersFilterDTO filters);
         void UpdateUser(UserUpdateDTO model);
     }
 }

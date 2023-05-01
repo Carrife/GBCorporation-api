@@ -19,16 +19,25 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null, 
+            [FromQuery] string? patronymicRu = null, [FromQuery] string? nameEn = null, [FromQuery] string? surnameEn = null, 
+            [FromQuery] string? login = null, [FromQuery] int?[] departmentIds = null, [FromQuery] int?[] positionIds = null, 
+            [FromQuery] int?[] statusIds = null)
         {
-            return Ok(_employeeService.ListAll());
+            var filters = new EmployeeFilterDTO(nameRu, surnameRu, patronymicRu, nameEn, surnameEn, login, departmentIds, positionIds, statusIds);
+
+            return Ok(_employeeService.ListAll(filters));
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("GetAllUsers")]
-        public IActionResult GetAllUsers()
+        public IActionResult GetAllUsers([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null,
+            [FromQuery] string? patronymicRu = null, [FromQuery] string? nameEn = null, [FromQuery] string? surnameEn = null,
+            [FromQuery] string? login = null, [FromQuery] int?[] roleIds = null)
         {
-            return Ok(_employeeService.ListAllUsers());
+            var filters = new UsersFilterDTO(nameRu, surnameRu, patronymicRu, nameEn, surnameEn, login, roleIds);
+
+            return Ok(_employeeService.ListAllUsers(filters));
         }
 
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]

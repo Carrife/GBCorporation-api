@@ -200,5 +200,26 @@ namespace GB_Corporation.Controllers
 
             return Ok();
         }
+
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [HttpGet("GetEmployeeStatuses")]
+        public IActionResult GetEmployeeStatuses()
+        {
+            return Ok(_superDictionaryService.GetEmployeeStatuses());
+        }
+
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [HttpGet("GetApplicantStatuses")]
+        public IActionResult GetApplicantStatuses()
+        {
+            return Ok(_superDictionaryService.GetApplicantStatuses());
+        }
+
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [HttpGet("GetHiringStatuses")]
+        public IActionResult GetHiringStatuses()
+        {
+            return Ok(_superDictionaryService.GetHiringStatuses());
+        }
     }
 }

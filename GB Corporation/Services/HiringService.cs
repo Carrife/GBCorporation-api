@@ -5,6 +5,7 @@ using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace GB_Corporation.Services
 {
@@ -39,11 +40,18 @@ namespace GB_Corporation.Services
             _roleRepository = roleRepository;
         }
 
-        public List<HiringDataDTO> ListAll(int userId, string role)
+        public List<HiringDataDTO> ListAll(int userId, string role, HiringFilterDTO filters)
         {
+            var predicate = CreatePredicate(filters, out bool IsFilterActive);
+
+            var totalElements = _hiringDataRepository.GetResultSpec(x => x.Where(predicate)).Count();
+
+            if (totalElements == 0)
+                return new List<HiringDataDTO>();
+
             if (role == nameof(RoleEnum.Admin) || role == nameof(RoleEnum.HR))
             {
-                return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x)
+                return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(predicate))
                    .Include(x => x.Applicant)
                    .Include(x => x.Position)
                    .Include(x => x.Status)
@@ -52,12 +60,59 @@ namespace GB_Corporation.Services
             else
             {
                 var hiringDataIds = _hiringInterviewerRepository.GetListResultSpec(x => x.Where(p => p.InterviewerId == userId)).ToDictionary(k => k.HiringDataId, v => v.Id);
-                return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(p => hiringDataIds.ContainsKey(p.Id)))
+                predicate = predicate.And(p => hiringDataIds.ContainsKey(p.Id));
+                return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(predicate))
                     .Include(x => x.Applicant)
                     .Include(x => x.Position)
                     .Include(x => x.Status)
                     .OrderBy(x => x.Applicant.NameEn).ThenBy(x => x.Applicant.SurnameEn));
             }
+        }
+
+        private Expression<Func<HiringData, bool>> CreatePredicate(HiringFilterDTO filters, out bool IsFilterActive)
+        {
+            var predicate = PredicateBuilder.True<HiringData>();
+            IsFilterActive = false;
+
+            if (!string.IsNullOrEmpty(filters.NameEn))
+            {
+                predicate = predicate.And(p => p.Applicant.NameEn.ToLower().Contains(filters.NameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameEn))
+            {
+                predicate = predicate.And(p => p.Applicant.SurnameEn.ToLower().Contains(filters.SurnameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.Login))
+            {
+                predicate = predicate.And(p => p.Applicant.Login.ToLower() == filters.Login.ToLower());
+                IsFilterActive = true;
+            }
+
+            if (filters.PositionIds != null && filters.PositionIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.PositionIds.Contains(p.PositionId));
+                IsFilterActive = true;
+            }
+
+            if (filters.StatusIds != null && filters.StatusIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.StatusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+            else
+            {
+                var statusIds = _superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.Name == nameof(HiringStatusEnum.Open)
+                    && p.DictionaryId == (int)DictionaryEnum.HiringStatus)).Select(x => x.Id).ToList();
+
+                predicate = predicate.And(p => statusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+
+            return predicate;
         }
 
         public InterviewersDTO GetInterviewers()

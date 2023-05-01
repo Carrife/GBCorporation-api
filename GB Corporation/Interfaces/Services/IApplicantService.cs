@@ -4,7 +4,7 @@ namespace GB_Corporation.Interfaces.Services
 {
     public interface IApplicantService
     {
-        List<ApplicantDTO> ListAll();
+        List<ApplicantDTO> ListAll(ApplicantFilterDTO filters);
         ApplicantUpdateDTO GetById(int id);
         List<ShortDTO> ListActiveShort();
         void Create(ApplicantCreateDTO register);

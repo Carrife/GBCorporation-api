@@ -20,6 +20,6 @@
         /// <summary>
         /// An existing record with the same data was already found.
         /// </summary>
-        SameDataExists = 1,
+        SameDataExists,
     }
 }

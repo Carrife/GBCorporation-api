@@ -8,6 +8,9 @@ namespace GB_Corporation.Interfaces.Services
         List<ShortDTO> GetDepartments();
         List<ShortDTO> GetForeignLanguages();
         List<ShortDTO> GetPositions();
+        List<ShortDTO> GetEmployeeStatuses();
+        List<ShortDTO> GetApplicantStatuses();
+        List<ShortDTO> GetHiringStatuses();
         bool IsPositionExists(string name);
         void CreatePosition(ShortDTO model);
         bool IsExists(int id);

@@ -20,9 +20,13 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
         [HttpGet("GetAll")]
-        public IActionResult GetAll([Required][FromHeader] string role, [Required][FromHeader] int userId)
+        public IActionResult GetAll([Required][FromHeader] string role, [Required][FromHeader] int userId, [FromQuery] string? nameEn = null, 
+            [FromQuery] string? surnameEn = null, [FromQuery] string? login = null, [FromQuery] int?[] positionIds = null, 
+            [FromQuery] int?[] statusIds = null)
         {
-            return Ok(_hiringService.ListAll(userId, role));
+            var filters = new HiringFilterDTO(nameEn, surnameEn, login, positionIds, statusIds);
+
+            return Ok(_hiringService.ListAll(userId, role, filters));
         }
 
         [Authorize(Roles = "Admin, HR")]

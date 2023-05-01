@@ -43,7 +43,7 @@ using(AppDbContext context = new())
         context.SuperDictionaries.Add(new SuperDictionary { Id = 12, Name = "Fired", DictionaryId = 4 });
 
         context.SuperDictionaries.Add(new SuperDictionary { Id = 13, Name = "Active", DictionaryId = 5 });
-        context.SuperDictionaries.Add(new SuperDictionary { Id = 14, Name = "Rejected", DictionaryId = 5 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 14, Name = "InProgress", DictionaryId = 5 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 15, Name = "Hired", DictionaryId = 5 });
 
         context.SuperDictionaries.Add(new SuperDictionary { Id = 16, Name = "Open", DictionaryId = 6 });

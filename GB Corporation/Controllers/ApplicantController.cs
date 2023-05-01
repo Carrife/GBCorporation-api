@@ -19,9 +19,13 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null,
+            [FromQuery] string? patronymicRu = null, [FromQuery] string? nameEn = null, [FromQuery] string? surnameEn = null, 
+            [FromQuery] string? login = null, [FromQuery] int?[] statusIds = null)
         {
-            return Ok(_applicantService.ListAll());
+            var filters = new ApplicantFilterDTO(nameRu, surnameRu, patronymicRu, nameEn, surnameEn, login, statusIds);
+
+            return Ok(_applicantService.ListAll(filters));
         }
 
         [Authorize(Roles = "Admin, HR")]

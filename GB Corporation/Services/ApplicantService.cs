@@ -5,6 +5,7 @@ using GB_Corporation.Interfaces.Repositories;
 using GB_Corporation.Interfaces.Services;
 using GB_Corporation.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace GB_Corporation.Services
 {
@@ -30,11 +31,76 @@ namespace GB_Corporation.Services
             _applicantProgrammingTestRepository = applicantProgrammingTestRepository;
         }
 
-        public List<ApplicantDTO> ListAll()
+        public List<ApplicantDTO> ListAll(ApplicantFilterDTO filters)
         {
-            return AutoMapperExpression.AutoMapApplicantDTO(_applicantReporitory.GetListResultSpec(x => x)
+            var predicate = CreatePredicate(filters, out bool IsFilterActive);
+
+            var totalElements = _applicantReporitory.GetResultSpec(x => x.Where(predicate)).Count();
+
+            if (totalElements == 0)
+                return new List<ApplicantDTO>();
+
+            return AutoMapperExpression.AutoMapApplicantDTO(_applicantReporitory.GetListResultSpec(x => x.Where(predicate))
                     .Include(x => x.Status)
                     .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+        }
+
+        private Expression<Func<Applicant, bool>> CreatePredicate(ApplicantFilterDTO filters, out bool IsFilterActive)
+        {
+            var predicate = PredicateBuilder.True<Applicant>();
+            IsFilterActive = false;
+
+            if (!string.IsNullOrEmpty(filters.NameRu))
+            {
+                predicate = predicate.And(p => p.NameRu.ToLower().Contains(filters.NameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameRu))
+            {
+                predicate = predicate.And(p => p.SurnameRu.ToLower().Contains(filters.SurnameRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.PatronymicRu))
+            {
+                predicate = predicate.And(p => p.PatronymicRu.ToLower().Contains(filters.PatronymicRu.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.NameEn))
+            {
+                predicate = predicate.And(p => p.NameEn.ToLower().Contains(filters.NameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.SurnameEn))
+            {
+                predicate = predicate.And(p => p.SurnameEn.ToLower().Contains(filters.SurnameEn.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (!string.IsNullOrEmpty(filters.Login))
+            {
+                predicate = predicate.And(p => p.Login.ToLower().Contains(filters.Login.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if (filters.StatusIds != null && filters.StatusIds.Length > 0)
+            {
+                predicate = predicate.And(p => filters.StatusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+            else
+            {
+                var statusIds = _superDictionaryRepository.GetListResultSpec(x => x.Where(p => p.Name != nameof(ApplicantStatusEnum.Hired)
+                    && p.DictionaryId == (int)DictionaryEnum.ApplicantStatus)).Select(x => x.Id).ToList();
+
+                predicate = predicate.And(p => statusIds.Contains(p.StatusId));
+                IsFilterActive = true;
+            }
+
+            return predicate;
         }
 
         public ApplicantUpdateDTO GetById(int id)

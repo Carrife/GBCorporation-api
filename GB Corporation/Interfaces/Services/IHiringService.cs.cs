@@ -4,7 +4,7 @@ namespace GB_Corporation.Interfaces.Services
 {
     public interface IHiringService
     {
-        List<HiringDataDTO> ListAll(int userId, string role);
+        List<HiringDataDTO> ListAll(int userId, string role, HiringFilterDTO filters);
         InterviewersDTO GetInterviewers();
         HiringTestDTO ListTestShort(int id);
         List<ShortDTO> GetInterviewerPositions();
