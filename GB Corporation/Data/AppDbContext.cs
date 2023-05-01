@@ -10,7 +10,7 @@ namespace GB_Corporation.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             Database.EnsureCreated();
-            //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             //AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
         }
         
@@ -21,7 +21,6 @@ namespace GB_Corporation.Data
         public DbSet<TestCompetencies> TestCompetencies { get; set; }
         public DbSet<Applicant> Applicants { get; set; }
         public DbSet<HiringData> HiringDatas { get; set; }
-        public DbSet<ApplicantEmployee> ApplicantEmployees { get; set; }
         public DbSet<HiringInterviewer> HiringInterviewers { get; set; }
         public DbSet<HiringTestData> HiringTestDatas { get; set; }
         public DbSet<ApplicantForeignLanguageTest> ApplicantForeignLanguageTests { get; set; }

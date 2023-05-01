@@ -215,13 +215,31 @@ namespace GB_Corporation.Services
             employee.Password = null;
             employee.Email = null;
 
+            var applicantStatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus &&
+                    p.Name == nameof(ApplicantStatusEnum.Active))).First().Id;
+
             if(_applicantRepository.GetResultSpec(x => x.Any(p => p.Login == employee.Login)))
             {
                 var applicant = _applicantRepository.GetResultSpec(x => x.Where(p => p.Login == employee.Login)).First();
-                applicant.StatusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.ApplicantStatus &&
-                    p.Name == nameof(ApplicantStatusEnum.Active))).First().Id;
+                applicant.StatusId = applicantStatusId;
 
                 _applicantRepository.Update(applicant);
+            }
+            else
+            {
+                var applicant = new Applicant
+                {
+                    NameEn = employee.NameEn,
+                    SurnameEn = employee.SurnameEn,
+                    NameRu = employee.NameRu,
+                    SurnameRu = employee.SurnameRu,
+                    PatronymicRu = employee.PatronymicRu,
+                    Login = employee.Login,
+                    Phone = employee.Phone,
+                    StatusId = applicantStatusId
+                };
+
+                _applicantRepository.Create(applicant);
             }
 
             _employeeRepository.Update(employee);
