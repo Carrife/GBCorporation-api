@@ -46,11 +46,8 @@ namespace GB_Corporation.Controllers
         [HttpPost("Complete")]
         public IActionResult Complete([Required][FromBody] TestCompleteDTO model)
         {
-            if(model == null)
+            if(model == null || !_employeeService.IsExists(model.UserId))
                 return BadRequest();
-
-            if (!_employeeService.IsExists(model.UserId))
-                return NotFound();
 
             _testCompetenciesService.Complete(model);
 
@@ -61,8 +58,8 @@ namespace GB_Corporation.Controllers
         [HttpGet("GetByUserId")]
         public IActionResult GetByUserId([Required][FromHeader] int id)
         {
-            if (!_employeeService.IsExists(id))
-                return NotFound();
+            if (id < 1 ||!_employeeService.IsExists(id))
+                return BadRequest();
 
             var testData = _testCompetenciesService.GetUserTests(id);
 

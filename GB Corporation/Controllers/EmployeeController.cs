@@ -19,9 +19,9 @@ namespace GB_Corporation.Controllers
 
         [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
         [HttpGet("GetAll")]
-        public IActionResult GetAll([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null, 
-            [FromQuery] string? patronymicRu = null, [FromQuery] string? nameEn = null, [FromQuery] string? surnameEn = null, 
-            [FromQuery] string? login = null, [FromQuery] int?[] departmentIds = null, [FromQuery] int?[] positionIds = null, 
+        public IActionResult GetAll([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null,
+            [FromQuery] string? patronymicRu = null, [FromQuery] string? nameEn = null, [FromQuery] string? surnameEn = null,
+            [FromQuery] string? login = null, [FromQuery] int?[] departmentIds = null, [FromQuery] int?[] positionIds = null,
             [FromQuery] int?[] statusIds = null)
         {
             var filters = new EmployeeFilterDTO(nameRu, surnameRu, patronymicRu, nameEn, surnameEn, login, departmentIds, positionIds, statusIds);
@@ -46,10 +46,26 @@ namespace GB_Corporation.Controllers
         {
             if (id < 1 || !_employeeService.IsExists(id))
                 return BadRequest();
-            
+
             var employee = _employeeService.GetById(id);
 
             return Ok(employee);
+        }
+
+        [Authorize(Roles = "Admin, LineManager")]
+        [HttpGet("GetCV")]
+        public IActionResult GetCV([Required][FromHeader] int id)
+        {
+            if (id < 1 || !_employeeService.IsExists(id))
+                return BadRequest();
+
+            string path = _employeeService.GetCV(id);
+
+            FileStream fs = new(path, FileMode.Open);
+            string fileType = "application/pdf";
+            string file_name = path.Split("\\").Last();
+
+            return File(fs, fileType, file_name);
         }
 
         [Authorize(Roles = "Admin")]
@@ -66,6 +82,8 @@ namespace GB_Corporation.Controllers
 
             return Ok();
         }
+
+        
 
         [Authorize(Roles = "Admin")]
         [HttpPut("Fired")]

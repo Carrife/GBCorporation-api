@@ -13,5 +13,6 @@ namespace GB_Corporation.Interfaces.Services
         EmployeeGetDTO GetById(int id);
         List<UserDTO> ListAllUsers(UsersFilterDTO filters);
         void UpdateUser(UserUpdateDTO model);
+        string GetCV(int id);
     }
 }

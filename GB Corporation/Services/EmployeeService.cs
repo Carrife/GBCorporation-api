@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using GB_Corporation.Models;
 using GB_Corporation.Enums;
 using System.Linq.Expressions;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace GB_Corporation.Services
 {
@@ -14,13 +15,15 @@ namespace GB_Corporation.Services
         private readonly IRepository<Employee> _employeeRepository;
         private readonly IRepository<Applicant> _applicantRepository;
         private readonly IRepository<SuperDictionary> _superDictionaryRepository;
+        private readonly IWebHostEnvironment _appEnvironment;
 
         public EmployeeService(IRepository<Employee> employeeRepository, IRepository<Applicant> applicantRepository, 
-            IRepository<SuperDictionary> superDictionaryRepository)
+            IRepository<SuperDictionary> superDictionaryRepository, IWebHostEnvironment appEnvironment)
         {
             _employeeRepository = employeeRepository;
             _applicantRepository = applicantRepository;
             _superDictionaryRepository = superDictionaryRepository;
+            _appEnvironment = appEnvironment;
         }
 
         public bool IsExists(int id) => _employeeRepository.GetResultSpec(x => x.Any(p => p.Id == id));
@@ -285,6 +288,42 @@ namespace GB_Corporation.Services
             }
             
             _employeeRepository.Update(user);
+        }
+
+        public string GetCV(int id)
+        {
+            var employee = _employeeRepository.GetResultSpec(x => x.Where(p => p.Id == id)).Include(x => x.Position).First();
+            var pathTemplate = Path.Combine(_appEnvironment.ContentRootPath, @"Files\CV\CV.docx");
+            var pathResult = Path.Combine(_appEnvironment.ContentRootPath, $@"Files\CV\CV {employee.NameEn} {employee.SurnameEn}.docx");
+
+            var wordApplication = new Word.Application();
+            
+
+            try
+            {
+                wordApplication.Visible = false;
+                
+                var wordDoc = wordApplication.Documents.Open(pathTemplate);
+                FormatingCV("<name>", $"{employee.NameEn} {employee.SurnameEn}", wordDoc);
+                FormatingCV("<position>", $"{employee.Position.Name}", wordDoc);
+
+                wordDoc.SaveAs2(pathResult);
+
+                wordDoc.Close();
+            }
+            catch
+            {
+                Console.WriteLine("Doc error");
+            }
+
+            return pathResult;
+        }
+
+        private void FormatingCV(string strToReplace, string data, Word.Document doc)
+        {
+            var content = doc.Content;
+            content.Find.ClearFormatting();
+            content.Find.Execute(FindText: strToReplace, ReplaceWith: data);
         }
     }
 }
