@@ -28,14 +28,28 @@ namespace GB_Corporation.Controllers
             return Ok(_testCompetenciesService.GetAll());
         }
 
+        [Authorize(Roles = "Admin, LineManager")]
+        [HttpPost("Create")]
+        public IActionResult Create(TestCreateDTO model)
+        {
+            if (model == null || model.EmployeeId < 1 || !_employeeService.IsExists(model.EmployeeId))
+                return BadRequest();
+
+            _testCompetenciesService.Create(model);
+
+            return Ok();
+        }
+
         [Authorize(Roles = "TeamLeader, Developer, Admin")]
         [HttpGet("Start")]
         public IActionResult Start([Required][FromHeader] int id)
         {
-            if (id < 1 || !_templateService.IsDocExists(id))
+            if (id < 1 || !_testCompetenciesService.IsDocExists(id))
                 return BadRequest();
 
-            string docPath = _templateService.GetFilePath(id);
+            int docId = _testCompetenciesService.GetTemplateId(id);
+
+            string docPath = _templateService.GetFilePath(docId);
 
             var testData = _testCompetenciesService.GetTestData(docPath);
 
@@ -46,7 +60,7 @@ namespace GB_Corporation.Controllers
         [HttpPost("Complete")]
         public IActionResult Complete([Required][FromBody] TestCompleteDTO model)
         {
-            if(model == null || !_employeeService.IsExists(model.UserId))
+            if(model == null)
                 return BadRequest();
 
             _testCompetenciesService.Complete(model);
@@ -55,13 +69,40 @@ namespace GB_Corporation.Controllers
         }
 
         [Authorize(Roles = "HR, TeamLeader, Developer, Admin")]
-        [HttpGet("GetByUserId")]
-        public IActionResult GetByUserId([Required][FromHeader] int id)
+        [HttpGet("GetUserTests")]
+        public IActionResult GetUserTests([FromHeader] int? id, [FromQuery] string? login = null, [FromQuery] string? test = null, 
+            [FromQuery] int?[] statusIds = null)
         {
-            if (id < 1 ||!_employeeService.IsExists(id))
-                return BadRequest();
+            if (id != null)
+            {
+                if(!_employeeService.IsExists((int)id))
+                {
+                    return BadRequest();
+                }
+            }
 
-            var testData = _testCompetenciesService.GetUserTests(id);
+            var filters = new TestProgressFilterDTO(login, test, statusIds);
+
+            var testData = _testCompetenciesService.GetUserTests(id, filters);
+
+            return Ok(testData);
+        }
+
+        [Authorize(Roles = "HR, TeamLeader, Developer, Admin")]
+        [HttpGet("GetUserResults")]
+        public IActionResult GetUserResults([FromHeader] int? id, [FromQuery] string? login = null, [FromQuery] string? test = null)
+        {
+            if (id != null)
+            {
+                if (!_employeeService.IsExists((int)id))
+                {
+                    return BadRequest();
+                }
+            }
+
+            var filters = new TestResultFilterDTO(login, test);
+
+            var testData = _testCompetenciesService.GetUserResults(id, filters);
 
             return Ok(testData);
         }

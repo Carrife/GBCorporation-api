@@ -8,6 +8,7 @@
         EmployeeStatus,
         ApplicantStatus,
         HiringStatus,
-        Position
+        Position,
+        TestStatus
     }
 }

@@ -135,16 +135,33 @@ namespace GB_Corporation.Helpers
         }
 
         //TestCompetencies
-        public static List<TestCompetenciesDTO> AutoMapTestCompetenciesDTO(IQueryable<TestCompetencies> entities)
+        public static List<TestStatusDTO> AutoMapTestStatusDTO(IQueryable<TestCompetencies> entities)
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<TestCompetencies, TestCompetenciesDTO>()
-                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.ToString("yyyy-MM-dd")));
+                cfg.CreateMap<TestCompetencies, TestStatusDTO>()
+                    .ForMember(dist => dist.Employee, opt => opt.MapFrom(x => x.Employee.Login))
+                    .ForMember(dist => dist.Status, opt => opt.MapFrom(x => x.Status.Name))
+                    .ForMember(dist => dist.Test, opt => opt.MapFrom(x => x.Title));
             });
 
             var mapper = new Mapper(config);
 
-            return mapper.Map<List<TestCompetenciesDTO>>(entities);
+            return mapper.Map<List<TestStatusDTO>>(entities);
+        }
+
+        public static List<TestResultDTO> AutoMapTestResultDTO(IQueryable<TestCompetencies> entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<TestCompetencies, TestResultDTO>()
+                    .ForMember(dist => dist.Employee, opt => opt.MapFrom(x => x.Employee.Login))
+                    .ForMember(dist => dist.Result, opt => opt.MapFrom(x => $"{x.TestResult}%"))
+                    .ForMember(dist => dist.Test, opt => opt.MapFrom(x => x.Title))
+                    .ForMember(dist => dist.Date, opt => opt.MapFrom(x => x.Date.GetValueOrDefault().ToString("yyyy-MM-dd")));
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<List<TestResultDTO>>(entities);
         }
 
         //Hiring
@@ -334,6 +351,17 @@ namespace GB_Corporation.Helpers
             var mapper = new Mapper(config);
 
             return mapper.Map<ShortDTO>(entity);
+        }
+
+        public static List<ShortDTO> AutoMapShortDTO(IQueryable<Template> entities)
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Template, ShortDTO>();
+            });
+
+            var mapper = new Mapper(config);
+
+            return mapper.Map<List<ShortDTO>>(entities);
         }
     }
 }

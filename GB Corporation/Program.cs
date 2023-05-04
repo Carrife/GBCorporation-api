@@ -59,6 +59,9 @@ using(AppDbContext context = new())
         context.SuperDictionaries.Add(new SuperDictionary { Id = 25, Name = "Line Manager", DictionaryId = 7 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 26, Name = "CEO", DictionaryId = 7 });
         context.SuperDictionaries.Add(new SuperDictionary { Id = 27, Name = "Chief Accountant", DictionaryId = 7 });
+
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 16, Name = "Open", DictionaryId = 8 });
+        context.SuperDictionaries.Add(new SuperDictionary { Id = 17, Name = "Closed", DictionaryId = 8 });
     }
 
     if(!context.Roles.Any())

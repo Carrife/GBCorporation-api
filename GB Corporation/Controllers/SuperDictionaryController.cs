@@ -233,5 +233,12 @@ namespace GB_Corporation.Controllers
         {
             return Ok(_superDictionaryService.GetHiringStatuses());
         }
+
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [HttpGet("GetTestCompetenciesStatuses")]
+        public IActionResult GetTestCompetenciesStatuses()
+        {
+            return Ok(_superDictionaryService.GetTestCompetenciesStatuses());
+        }
     }
 }

@@ -29,6 +29,13 @@ namespace GB_Corporation.Controllers
             return Ok(_employeeService.ListAll(filters));
         }
 
+        [Authorize(Roles = "Admin, LineManager")]
+        [HttpGet("GetAllShort")]
+        public IActionResult GetAllShort()
+        {
+            return Ok(_employeeService.ListAllShort());
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet("GetAllUsers")]
         public IActionResult GetAllUsers([FromQuery] string? nameRu = null, [FromQuery] string? surnameRu = null,

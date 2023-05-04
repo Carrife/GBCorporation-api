@@ -202,5 +202,11 @@ namespace GB_Corporation.Services
             return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
                 .Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus)).OrderBy(x => x.Name));
         }
+
+        public List<ShortDTO> GetTestCompetenciesStatuses()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_superDictionaryRepository.GetListResultSpec(x => x
+                .Where(p => p.DictionaryId == (int)DictionaryEnum.TestStatus)).OrderBy(x => x.Name));
+        }
     }
 }

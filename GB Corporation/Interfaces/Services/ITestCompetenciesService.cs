@@ -6,7 +6,11 @@ namespace GB_Corporation.Interfaces.Services
     {
         List<CompetenciesTestDTO> GetTestData(string docPath);
         void Complete(TestCompleteDTO model);
-        List<TemplateDTO> GetAll();
-        List<TestCompetenciesDTO> GetUserTests(int id);
+        List<ShortDTO> GetAll();
+        void Create(TestCreateDTO model);
+        List<TestStatusDTO> GetUserTests(int? id, TestProgressFilterDTO filters);
+        List<TestResultDTO> GetUserResults(int? id, TestResultFilterDTO filters);
+        bool IsDocExists(int competenceId);
+        int GetTemplateId(int competenceId);
     }
 }

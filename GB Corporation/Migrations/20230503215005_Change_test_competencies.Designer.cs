@@ -3,6 +3,7 @@ using System;
 using GB_Corporation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GB_Corporation.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230503215005_Change_test_competencies")]
+    partial class Change_test_competencies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -397,7 +399,7 @@ namespace GB_Corporation.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime?>("Date")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("EmployeeId")
@@ -406,7 +408,7 @@ namespace GB_Corporation.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TestResult")
+                    b.Property<int>("TestResult")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")

@@ -183,6 +183,14 @@ namespace GB_Corporation.Services
             return predicate;
         }
 
+        public List<ShortDTO> ListAllShort()
+        {
+            return AutoMapperExpression.AutoMapShortDTO(_employeeRepository.GetListResultSpec(x => x
+                .Where(p => p.Status.Name == nameof(EmployeeStatusEnum.Active)))
+                .Include(x => x.Status)
+                .OrderBy(x => x.NameEn).ThenBy(x => x.SurnameEn));
+        }
+
         public void Create(EmployeeCreateDTO model)
         {
             var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.EmployeeStatus &&
