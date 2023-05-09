@@ -17,7 +17,7 @@ namespace GB_Corporation.Controllers
             _templateService = templateService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {

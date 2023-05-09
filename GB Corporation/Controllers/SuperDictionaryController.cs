@@ -17,7 +17,7 @@ namespace GB_Corporation.Controllers
             _superDictionaryService = superDictionaryService;
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetProgrammingLanguages")]
         public IActionResult GetProgrammingLanguages()
         {
@@ -66,7 +66,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, Accountant, ChiefAccountant, CEO, BA")]
         [HttpGet("GetDepartments")]
         public IActionResult GetDepartments()
         {
@@ -115,7 +115,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetForeignLanguages")]
         public IActionResult GetForeignLanguages()
         {
@@ -164,7 +164,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR")]
+        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, Accountant, ChiefAccountant, CEO, BA")]
         [HttpGet("GetPositions")]
         public IActionResult GetPositions()
         {
@@ -213,21 +213,21 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetEmployeeStatuses")]
         public IActionResult GetEmployeeStatuses()
         {
             return Ok(_superDictionaryService.GetEmployeeStatuses());
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [Authorize(Roles = "Admin, HR")]
         [HttpGet("GetApplicantStatuses")]
         public IActionResult GetApplicantStatuses()
         {
             return Ok(_superDictionaryService.GetApplicantStatuses());
         }
 
-        [Authorize(Roles = "Admin, Developer, LineManager, TeamLeader, HR, BA, Accountant, CEO, ChiefAccountant")]
+        [Authorize(Roles = "Admin, LineManager, TeamLeader, HR, BA, CEO, ChiefAccountant")]
         [HttpGet("GetHiringStatuses")]
         public IActionResult GetHiringStatuses()
         {

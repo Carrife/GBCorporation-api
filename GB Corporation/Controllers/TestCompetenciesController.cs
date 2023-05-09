@@ -21,7 +21,7 @@ namespace GB_Corporation.Controllers
             _employeeService = employeeService;
         }
 
-        [Authorize(Roles = "Admin, Developer, TeamLeader")]
+        [Authorize(Roles = "Admin, LineManager")]
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
@@ -40,7 +40,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "TeamLeader, Developer, Admin")]
+        [Authorize(Roles = "Developer, LineManager, Admin, TeamLeader, Accountant, ChiefAccountant, BA")]
         [HttpGet("Start")]
         public IActionResult Start([Required][FromHeader] int id)
         {
@@ -56,7 +56,7 @@ namespace GB_Corporation.Controllers
             return Ok(testData);
         }
 
-        [Authorize(Roles = "TeamLeader, Developer, Admin")]
+        [Authorize(Roles = "Developer, LineManager, Admin, TeamLeader, Accountant, ChiefAccountant, BA")]
         [HttpPost("Complete")]
         public IActionResult Complete([Required][FromBody] TestCompleteDTO model)
         {
@@ -68,27 +68,24 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HR, TeamLeader, Developer, Admin")]
+        [Authorize(Roles = "Developer, LineManager, Admin, TeamLeader, Accountant, ChiefAccountant, BA")]
         [HttpGet("GetUserTests")]
-        public IActionResult GetUserTests([FromHeader] int? id, [FromQuery] string? login = null, [FromQuery] string? test = null, 
-            [FromQuery] int?[] statusIds = null)
+        public IActionResult GetUserTests([Required][FromHeader] int userId, [Required][FromHeader] string role, [FromQuery] string? login = null, 
+            [FromQuery] string? test = null, [FromQuery] int?[] statusIds = null)
         {
-            if (id != null)
+            if(!_employeeService.IsExists(userId))
             {
-                if(!_employeeService.IsExists((int)id))
-                {
-                    return BadRequest();
-                }
+                return BadRequest();
             }
 
             var filters = new TestProgressFilterDTO(login, test, statusIds);
 
-            var testData = _testCompetenciesService.GetUserTests(id, filters);
+            var testData = _testCompetenciesService.GetUserTests(userId, role, filters);
 
             return Ok(testData);
         }
 
-        [Authorize(Roles = "HR, TeamLeader, Developer, Admin")]
+        [Authorize(Roles = "Developer, LineManager, Admin, TeamLeader, Accountant, ChiefAccountant, BA")]
         [HttpGet("GetUserResults")]
         public IActionResult GetUserResults([FromHeader] int? id, [FromQuery] string? login = null, [FromQuery] string? test = null)
         {

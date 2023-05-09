@@ -80,7 +80,7 @@ namespace GB_Corporation.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "HR, Admin, TeamLeader, LineManager")]
+        [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
         [HttpPut("UpdateDescription")]
         public IActionResult UpdateDescription([Required][FromHeader] int id, [Required][FromHeader] string description)
         {

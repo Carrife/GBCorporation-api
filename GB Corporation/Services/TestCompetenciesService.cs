@@ -31,19 +31,19 @@ namespace GB_Corporation.Services
             return AutoMapperExpression.AutoMapShortDTO(_templateRepository.GetListResultSpec(x => x.Where(p => p.Link != null)).OrderBy(x => x.Name));
         }
 
-        public List<TestStatusDTO> GetUserTests(int? id, TestProgressFilterDTO filters)
+        public List<TestStatusDTO> GetUserTests(int userId, string role, TestProgressFilterDTO filters)
         {
-            var predicate = CreatePredicate(filters, out bool IsFilterActive);
+            var predicate = CreatePredicate(filters, role, userId, out bool IsFilterActive);
 
             var totalElements = _testCompetenciesReporitory.GetResultSpec(x => x.Where(predicate)).Count();
 
             if (totalElements == 0)
                 return new List<TestStatusDTO>();
 
-            if (id != null)
+            if (role != nameof(RoleEnum.Admin) && role != nameof(RoleEnum.HR) && role != nameof(RoleEnum.LineManager))
             {
                 return AutoMapperExpression.AutoMapTestStatusDTO(_testCompetenciesReporitory.GetListResultSpec(x => x
-                    .Where(predicate).Where(p => p.EmployeeId == id))
+                    .Where(predicate).Where(p => p.EmployeeId == userId))
                     .Include(x => x.Status)
                     .OrderBy(x => x.Title).ThenBy(x => x.Status.Name));
             }
@@ -57,7 +57,7 @@ namespace GB_Corporation.Services
                 
         }
 
-        private Expression<Func<TestCompetencies, bool>> CreatePredicate(TestProgressFilterDTO filters, out bool IsFilterActive)
+        private Expression<Func<TestCompetencies, bool>> CreatePredicate(TestProgressFilterDTO filters, string role, int userId, out bool IsFilterActive)
         {
             var predicate = PredicateBuilder.True<TestCompetencies>();
             IsFilterActive = false;
@@ -77,6 +77,18 @@ namespace GB_Corporation.Services
             if (!string.IsNullOrEmpty(filters.Test))
             {
                 predicate = predicate.And(p => p.Title.ToLower().Contains(filters.Test.ToLower()));
+                IsFilterActive = true;
+            }
+
+            if(role == nameof(RoleEnum.LineManager))
+            {
+                var userDepartmentId = _employeeReporitory.GetResultSpec(x => x.Where(p => p.Id == userId)).First().DepartmentId;
+
+                var employeeIds = _employeeReporitory.GetListResultSpec(x => x
+                    .Where(p => p.DepartmentId == userDepartmentId)).Select(x => x.Id).ToList();
+
+                predicate = predicate.And(p => employeeIds.Contains(p.EmployeeId));
+
                 IsFilterActive = true;
             }
 

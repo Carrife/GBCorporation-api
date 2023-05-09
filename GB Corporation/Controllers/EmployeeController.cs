@@ -59,7 +59,7 @@ namespace GB_Corporation.Controllers
             return Ok(employee);
         }
 
-        [Authorize(Roles = "Admin, LineManager")]
+        [Authorize(Roles = "Admin, LineManager, HR")]
         [HttpGet("GetCV")]
         public IActionResult GetCV([Required][FromHeader] int id)
         {
@@ -89,8 +89,6 @@ namespace GB_Corporation.Controllers
 
             return Ok();
         }
-
-        
 
         [Authorize(Roles = "Admin")]
         [HttpPut("Fired")]

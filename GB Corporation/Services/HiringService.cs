@@ -42,7 +42,7 @@ namespace GB_Corporation.Services
 
         public List<HiringDataDTO> ListAll(int userId, string role, HiringFilterDTO filters)
         {
-            var predicate = CreatePredicate(filters, out bool IsFilterActive);
+            var predicate = CreatePredicate(filters, role, userId, out bool IsFilterActive);
 
             var totalElements = _hiringDataRepository.GetResultSpec(x => x.Where(predicate)).Count();
 
@@ -59,8 +59,6 @@ namespace GB_Corporation.Services
             }
             else
             {
-                var hiringDataIds = _hiringInterviewerRepository.GetListResultSpec(x => x.Where(p => p.InterviewerId == userId)).ToDictionary(k => k.HiringDataId, v => v.Id);
-                predicate = predicate.And(p => hiringDataIds.ContainsKey(p.Id));
                 return AutoMapperExpression.AutoMapHiringDataDTO(_hiringDataRepository.GetListResultSpec(x => x.Where(predicate))
                     .Include(x => x.Applicant)
                     .Include(x => x.Position)
@@ -69,7 +67,7 @@ namespace GB_Corporation.Services
             }
         }
 
-        private Expression<Func<HiringData, bool>> CreatePredicate(HiringFilterDTO filters, out bool IsFilterActive)
+        private Expression<Func<HiringData, bool>> CreatePredicate(HiringFilterDTO filters, string role, int userId, out bool IsFilterActive)
         {
             var predicate = PredicateBuilder.True<HiringData>();
             IsFilterActive = false;
@@ -112,7 +110,16 @@ namespace GB_Corporation.Services
                 IsFilterActive = true;
             }
 
-            return predicate;
+            if (role != nameof(RoleEnum.Admin) || role != nameof(RoleEnum.HR))
+            {
+                var hiringDataIds = _hiringInterviewerRepository.GetListResultSpec(x => x
+                    .Where(p => p.InterviewerId == userId)).Select(x => x.HiringDataId).ToList();
+
+                predicate = predicate.And(p => hiringDataIds.Contains(p.Id));
+                IsFilterActive = true;
+            }
+
+             return predicate;
         }
 
         public InterviewersDTO GetInterviewers()
