@@ -189,6 +189,17 @@ namespace GB_Corporation.Services
             return AutoMapperExpression.AutoMapShortDTO(_roleRepository.GetListResultSpec(x => x.Where(p => (p.Title != nameof(RoleEnum.Accountant)) && (p.Title != nameof(RoleEnum.Developer)))));
         }
 
+        public ApplicantNotifyDTO GetApplicantNotifyData(HiringCreateDTO model)
+        {
+            var applicant = _applicantReporitory.GetById(model.ApplicantId);
+
+            return new ApplicantNotifyDTO
+            {
+                Applicant = $"{applicant.NameEn} {applicant.SurnameEn}",
+                Position = _superDictionaryRepository.GetById(model.PositionId).Name
+            };
+        }
+
         public bool IsExistsActiveData(int applicantId)
         {
             var statusId = _superDictionaryRepository.GetResultSpec(x => x.Where(p => p.DictionaryId == (int)DictionaryEnum.HiringStatus &&

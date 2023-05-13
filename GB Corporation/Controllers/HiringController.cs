@@ -1,6 +1,8 @@
 ﻿using GB_Corporation.DTOs;
 using GB_Corporation.Enums;
+using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Services;
+using GB_Corporation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -12,10 +14,14 @@ namespace GB_Corporation.Controllers
     public class HiringController : ControllerBase
     {
         private readonly IHiringService _hiringService;
+        private readonly EmailService _emailService;
+        private readonly IConfiguration _configuration;
 
-        public HiringController(IHiringService hiringService)
+        public HiringController(IHiringService hiringService, EmailService emailService, IConfiguration configuration)
         {
             _hiringService = hiringService;
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         [Authorize(Roles = "Admin, HR, TeamLeader, LineManager, CEO, ChiefAccountant, BA")]
@@ -76,6 +82,18 @@ namespace GB_Corporation.Controllers
                 return Conflict(new ErrorResponseDTO((int)ErrorResponses.InvalidData));
 
             _hiringService.Create(model);
+
+            EmailModel mailSettings = _configuration.GetSection("mailSettings").Get<EmailModel>();
+
+            var applicantData = _hiringService.GetApplicantNotifyData(model);
+            var emailNotification = new EmailDTO
+            {
+                Subject = "Interview",
+                Text = String.Format(mailSettings.HiringInterviewer, applicantData.Applicant, applicantData.Position, model.Date.ToString("yyyy-MM-dd")),
+                SendTo = model.Interviewers,
+            };
+
+            _emailService.SendEmail(emailNotification);
 
             return Ok();
         }

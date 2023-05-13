@@ -18,5 +18,6 @@ namespace GB_Corporation.Interfaces.Services
         bool CheckCreateData(HiringCreateDTO model);
         void Hire(HiringAcceptDTO id);
         void Reject(int id);
+        ApplicantNotifyDTO GetApplicantNotifyData(HiringCreateDTO model);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using GB_Corporation.DTOs;
+using GB_Corporation.Helpers;
 using GB_Corporation.Interfaces.Services;
+using GB_Corporation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -13,12 +15,17 @@ namespace GB_Corporation.Controllers
         private readonly ITestCompetenciesService _testCompetenciesService;
         private readonly ITemplateService _templateService;
         private readonly IEmployeeService _employeeService;
+        private readonly EmailService _emailService;
+        private readonly IConfiguration _configuration;
+
         public TestCompetenciesController(ITestCompetenciesService testCompetenciesService, ITemplateService templateService,
-            IEmployeeService employeeService)
+            IEmployeeService employeeService, EmailService emailService, IConfiguration configuration)
         {
             _testCompetenciesService = testCompetenciesService;
             _templateService = templateService;
             _employeeService = employeeService;
+            _emailService = emailService;
+            _configuration = configuration;
         }
 
         [Authorize(Roles = "Admin, LineManager")]
@@ -36,6 +43,17 @@ namespace GB_Corporation.Controllers
                 return BadRequest();
 
             _testCompetenciesService.Create(model);
+
+            EmailModel mailSettings = _configuration.GetSection("mailSettings").Get<EmailModel>();
+
+            var emailNotification = new EmailDTO
+            {
+                Subject = "Сompetence testing",
+                Text = String.Format(mailSettings.TestCompetencies),
+                SendTo = new List<int> { model.EmployeeId },
+            };
+            
+            _emailService.SendEmail(emailNotification);
 
             return Ok();
         }
