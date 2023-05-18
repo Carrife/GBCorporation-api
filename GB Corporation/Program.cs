@@ -77,6 +77,26 @@ using(AppDbContext context = new())
         context.Roles.Add(new Role { Id = 9, Title = "ChiefAccountant" });
     }
 
+    if(!context.Employees.Any())
+    {
+        context.Employees.Add(new Employee { 
+            Id = 1, 
+            NameRu = "Павел", 
+            SurnameRu = "Никимаров", 
+            PatronymicRu = "Александрович", 
+            NameEn = "Pavel", 
+            SurnameEn = "Nikimarov",
+            Login = "pav",
+            Phone = "+375336473809",
+            Email = "pav@mail.com",
+            Password = BCrypt.Net.BCrypt.HashPassword("rtt12tt"),
+            DepartmentId = 5,
+            RoleId = 3,
+            StatusId = 11,
+            PositionId = 24,
+        });
+    }
+
     context.SaveChanges();
 }
 

@@ -36,7 +36,6 @@ namespace GB_Corporation.Services
                 Phone = register.Phone,
                 Email = register.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(register.Password),
-                LanguageId = register.LanguageId,
                 DepartmentId = register.DepartmentId,
                 RoleId = register.RoleId,
                 PositionId = register.PositionId,
@@ -58,7 +57,8 @@ namespace GB_Corporation.Services
                 Id = id,
                 Name = emoployee.NameEn + " " + emoployee.SurnameEn,
                 Role = _roleRepository.GetById(emoployee.RoleId.Value).Title,
-                Token = jwt
+                Token = jwt,
+                Login = emoployee.Login
             };
            
             return user;
